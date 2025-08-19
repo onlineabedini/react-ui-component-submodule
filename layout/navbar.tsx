@@ -42,11 +42,26 @@ const Navbar: React.FC = () => {
   // Handle logout
   const handleLogout = () => {
     // Clear all user data and cookies
-    localStorage.removeItem("userRole");
-    removeCookie('token');
-    removeCookie('clientId');
-    removeCookie('providerId');
+    // check if they exist
+    if (getCookie('clientId')) {
+      removeCookie('clientId');
+    }
+    if (getCookie('providerId')) {
+      removeCookie('providerId');
+    }
+    if (getCookie('token')) {
+      removeCookie('token');
+    }
+    // if super admin, remove all cookies
+    if (getCookie('isSuperAdmin')) {
+      removeCookie('isSuperAdmin');
+    }
 
+    // remove userRole from localStorage
+    if (localStorage.getItem('userRole')) {
+      localStorage.removeItem('userRole');
+    }
+    
     // Redirect to home page
     router.push('/');
   };
