@@ -2,16 +2,15 @@
 // Navbar: Main navigation bar with user and language controls
 import React from "react";
 import ChangeLang from "@/components/global/changeLangDropdown";
-import { useRouter } from "next/navigation";
 import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiTrendingUp, FiMessageSquare, FiDollarSign } from "react-icons/fi";
 import { getCookie, removeCookie } from '@/utils/authCookieService';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from "next/navigation";
 
 // Navbar component with comprehensive navigation
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-
   // Check if user is logged in based on cookies
   const isLoggedIn = (getCookie('clientId') || getCookie('providerId')) && getCookie('token');
   const isProvider = !!getCookie('providerId');
@@ -61,9 +60,10 @@ const Navbar: React.FC = () => {
     if (localStorage.getItem('userRole')) {
       localStorage.removeItem('userRole');
     }
-    
-    // Redirect to home page
+
+    // Redirect to home page - refresh the page
     router.push('/');
+    window.location.reload();
   };
 
   return (
