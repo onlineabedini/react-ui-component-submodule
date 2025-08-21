@@ -1,5 +1,5 @@
 import { formatDateEuropean } from "@/lib/utils";
-import { addDays, subDays, startOfMonth, endOfMonth, eachDayOfInterval, format, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths } from "date-fns";
+import { addDays, subDays, startOfMonth, endOfMonth, eachDayOfInterval, format, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths, isBefore, startOfDay } from "date-fns";
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 
@@ -39,21 +39,57 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Check if today is still bookable (before 5 PM)
+  const isTodayBookable = (): boolean => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    return currentHour < 17; // Before 5 PM
+  };
+
   const predefinedRanges = [
-    { label: "Today", getDates: () => ({ startDate: new Date(), endDate: new Date() }) },
-    { label: "Tomorrow", getDates: () => ({ startDate: addDays(new Date(), 1), endDate: addDays(new Date(), 1) }) },
-    { label: "This week", getDates: () => ({ startDate: startOfWeek(new Date()), endDate: endOfWeek(new Date()) }) },
-    { label: "This month", getDates: () => ({ startDate: startOfMonth(new Date()), endDate: endOfMonth(new Date()) }) },
+    { 
+      label: "Today", 
+      getDates: () => ({ startDate: new Date(), endDate: new Date() }),
+      disabled: !isTodayBookable()
+    },
+    { 
+      label: "Tomorrow", 
+      getDates: () => ({ startDate: addDays(new Date(), 1), endDate: addDays(new Date(), 1) }),
+      disabled: false
+    },
+    { 
+      label: "This week", 
+      getDates: () => ({ startDate: startOfWeek(new Date()), endDate: endOfWeek(new Date()) }),
+      disabled: false
+    },
+    { 
+      label: "This month", 
+      getDates: () => ({ startDate: startOfMonth(new Date()), endDate: endOfMonth(new Date()) }),
+      disabled: false
+    },
   ];
 
   const handlePredefinedRange = (range: typeof predefinedRanges[0]) => {
+    if (range.disabled) return;
+    
     const dates = range.getDates();
     setDateRange(dates);
     onChange([formatDateEuropean(dates.startDate), formatDateEuropean(dates.endDate)]);
     setIsOpen(false);
   };
 
+  // Check if a date is in the past (before today)
+  const isDateInPast = (date: Date): boolean => {
+    const today = startOfDay(new Date());
+    return isBefore(date, today);
+  };
+
   const handleDateClick = (date: Date) => {
+    // Prevent selecting past dates
+    if (isDateInPast(date)) {
+      return;
+    }
+
     if (!dateRange.startDate || (dateRange.startDate && dateRange.endDate)) {
       setDateRange({ startDate: date, endDate: null });
     } else {
@@ -126,7 +162,14 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                   <button
                     key={index}
                     onClick={() => handlePredefinedRange(range)}
-                    className="w-full text-left text-blue-600 hover:text-blue-700 text-sm py-2 px-3 rounded-lg hover:bg-blue-50 transition-all duration-200 font-medium"
+                    disabled={range.disabled}
+                    className={`
+                      w-full text-left text-sm py-2 px-3 rounded-lg transition-all duration-200 font-medium
+                      ${range.disabled 
+                        ? 'text-gray-400 cursor-not-allowed' 
+                        : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'
+                      }
+                    `}
                   >
                     {range.label}
                   </button>
@@ -170,6 +213,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                     const isRangeStart = isStartDate(date);
                     const isRangeEnd = isEndDate(date);
                     const inRange = isInRange(date);
+                    const isPast = isDateInPast(date);
                     
                     return (
                       <button
@@ -177,13 +221,15 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                         onClick={() => handleDateClick(date)}
                         onMouseEnter={() => setHoverDate(date)}
                         onMouseLeave={() => setHoverDate(null)}
+                        disabled={isPast}
                         className={`
                           w-10 h-10 text-sm rounded-lg transition-all duration-200 font-medium
                           ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-900'}
+                          ${isPast ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : ''}
                           ${isRangeStart ? 'bg-blue-500 text-white rounded-r-none shadow-md' : ''}
                           ${isRangeEnd ? 'bg-blue-500 text-white rounded-l-none shadow-md' : ''}
                           ${inRange && !isRangeStart && !isRangeEnd ? 'bg-blue-100 text-blue-900 rounded-none' : ''}
-                          ${!inRange && isCurrentMonth ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
+                          ${!inRange && isCurrentMonth && !isPast ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
                           ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
                           ${dateRange.startDate && !dateRange.endDate && hoverDate && date < dateRange.startDate && date >= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
                         `}
@@ -229,6 +275,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                     const isRangeStart = isStartDate(date);
                     const isRangeEnd = isEndDate(date);
                     const inRange = isInRange(date);
+                    const isPast = isDateInPast(date);
                     
                     return (
                       <button
@@ -236,11 +283,13 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                         onClick={() => handleDateClick(date)}
                         onMouseEnter={() => setHoverDate(date)}
                         onMouseLeave={() => setHoverDate(null)}
+                        disabled={isPast}
                         className={`
                           w-10 h-10 text-sm rounded-lg transition-all duration-200 font-medium
                           ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-900'}
+                          ${isPast ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : ''}
                           ${isRangeStart ? 'bg-blue-500 text-white rounded-r-none shadow-md' : ''}
-                          ${!inRange && isCurrentMonth ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
+                          ${!inRange && isCurrentMonth && !isPast ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
                           ${isRangeEnd ? 'bg-blue-500 text-white rounded-l-none shadow-md' : ''}
                           ${inRange && !isRangeStart && !isRangeEnd ? 'bg-blue-100 text-blue-900 rounded-none' : ''}
                           ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
