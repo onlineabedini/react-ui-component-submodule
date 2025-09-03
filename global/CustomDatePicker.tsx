@@ -167,7 +167,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                       w-full text-left text-sm py-2 px-3 rounded-lg transition-all duration-200 font-medium
                       ${range.disabled 
                         ? 'text-gray-400 cursor-not-allowed' 
-                        : 'text-blue-600 hover:text-blue-700 hover:bg-blue-50'
+                        : 'text-teal-600 hover:text-teal-700 hover:bg-teal-50'
                       }
                     `}
                   >
@@ -226,12 +226,12 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                           w-10 h-10 text-sm rounded-lg transition-all duration-200 font-medium
                           ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-900'}
                           ${isPast ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : ''}
-                          ${isRangeStart ? 'bg-blue-500 text-white rounded-r-none shadow-md' : ''}
-                          ${isRangeEnd ? 'bg-blue-500 text-white rounded-l-none shadow-md' : ''}
-                          ${inRange && !isRangeStart && !isRangeEnd ? 'bg-blue-100 text-blue-900 rounded-none' : ''}
+                          ${isRangeStart ? 'bg-teal-500 text-white rounded-r-none shadow-md' : ''}
+                          ${isRangeEnd ? 'bg-teal-500 text-white rounded-l-none shadow-md' : ''}
+                          ${inRange && !isRangeStart && !isRangeEnd ? 'bg-teal-100 text-teal-900 rounded-none' : ''}
                           ${!inRange && isCurrentMonth && !isPast ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
-                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
-                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date < dateRange.startDate && date >= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
+                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-teal-200 text-teal-900 rounded-none' : ''}
+                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date < dateRange.startDate && date >= hoverDate ? 'bg-teal-200 text-teal-900 rounded-none' : ''}
                         `}
                       >
                         {format(date, 'd')}
@@ -288,12 +288,12 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                           w-10 h-10 text-sm rounded-lg transition-all duration-200 font-medium
                           ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-900'}
                           ${isPast ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : ''}
-                          ${isRangeStart ? 'bg-blue-500 text-white rounded-r-none shadow-md' : ''}
+                          ${isRangeStart ? 'bg-teal-500 text-white rounded-r-none shadow-md' : ''}
                           ${!inRange && isCurrentMonth && !isPast ? 'hover:bg-gray-100 hover:shadow-sm' : ''}
-                          ${isRangeEnd ? 'bg-blue-500 text-white rounded-l-none shadow-md' : ''}
-                          ${inRange && !isRangeStart && !isRangeEnd ? 'bg-blue-100 text-blue-900 rounded-none' : ''}
-                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
-                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date < dateRange.startDate && date >= hoverDate ? 'bg-blue-200 text-blue-900 rounded-none' : ''}
+                          ${isRangeEnd ? 'bg-teal-500 text-white rounded-l-none shadow-md' : ''}
+                          ${inRange && !isRangeStart && !isRangeEnd ? 'bg-teal-100 text-teal-900 rounded-none' : ''}
+                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date > dateRange.startDate && date <= hoverDate ? 'bg-teal-200 text-teal-900 rounded-none' : ''}
+                          ${dateRange.startDate && !dateRange.endDate && hoverDate && date < dateRange.startDate && date >= hoverDate ? 'bg-teal-200 text-teal-900 rounded-none' : ''}
                         `}
                       >
                         {format(date, 'd')}
@@ -316,7 +316,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
             <button
               onClick={handleConfirm}
               disabled={!dateRange.startDate || !dateRange.endDate}
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
+              className="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
             >
               Apply
             </button>
