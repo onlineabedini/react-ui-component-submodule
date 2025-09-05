@@ -53,7 +53,7 @@ const ProviderReviews: React.FC<ProviderReviewsProps> = ({
       // Filter reports with comments and client acceptance
       const reviewsWithComments = allReports.filter(report => 
         report.comment && 
-        report.comment.trim() !== '' && 
+        (report.comment || '').trim() !== '' && 
         report.clientAccept && 
         report.providerAccept
       );

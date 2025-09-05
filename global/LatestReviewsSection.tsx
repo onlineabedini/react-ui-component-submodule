@@ -42,7 +42,7 @@ const LatestReviewsSection: React.FC = () => {
       // Filter reports with comments and full acceptance
       const reviewsWithComments = allReports.filter(report => 
         report.comment && 
-        report.comment.trim() !== '' && 
+        (report.comment || '').trim() !== '' && 
         report.clientAccept && 
         report.providerAccept
       );
