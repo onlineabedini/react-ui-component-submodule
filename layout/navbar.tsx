@@ -1,20 +1,58 @@
 "use client";
 // Navbar: Main navigation bar with user and language controls
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ChangeLang from "@/components/global/changeLangDropdown";
 import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiTrendingUp, FiMessageSquare, FiDollarSign } from "react-icons/fi";
 import { getCookie, removeCookie } from '@/utils/authCookieService';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/navigation";
+import { useAuth } from '@/hooks/useAuth';
+import BookingSheet from '@/app/marketPlace/components/BookingSheet';
+import { toast } from 'sonner';
+import { clientService } from '@/services/client.service';
+import { providerService } from '@/services/provider.service';
+import { API_BASE_URL } from '@/config/api';
+import { getProfileImage, getDefaultClientImage, getDefaultProviderImage } from '@/utils/imageUtils';
 
 // Navbar component with comprehensive navigation
 const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  // Check if user is logged in based on cookies
-  const isLoggedIn = (getCookie('clientId') || getCookie('providerId')) && getCookie('token');
-  const isProvider = !!getCookie('providerId');
-  const isClient = !!getCookie('clientId');
+  // Auth state (reactive via polling in useAuth)
+  const { isLoggedIn, isProvider, isClient, handleLogout } = useAuth();
+  // State for general request modal
+  const [isGeneralRequestOpen, setIsGeneralRequestOpen] = useState(false);
+  // State for user data
+  const [userData, setUserData] = useState<any>(null);
+
+  // Fetch user data when logged in
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isClient) {
+        const clientId = getCookie('clientId');
+        if (clientId) {
+          try {
+            const data = await clientService.getClient(clientId);
+            setUserData(data);
+          } catch (error) {
+            console.error('Failed to fetch client data:', error);
+          }
+        }
+      } else if (isProvider) {
+        const providerId = getCookie('providerId');
+        if (providerId) {
+          try {
+            const data = await providerService.getProfile(providerId);
+            setUserData(data);
+          } catch (error) {
+            console.error('Failed to fetch provider data:', error);
+          }
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [isClient, isProvider]);
   const items = [
     {
       label: t('navbar.marketplace'),
@@ -38,31 +76,10 @@ const Navbar: React.FC = () => {
     },
   ];
 
-  // Handle logout
-  const handleLogout = () => {
-    // Clear all user data and cookies
-    // check if they exist
-    if (getCookie('clientId')) {
-      removeCookie('clientId');
-    }
-    if (getCookie('providerId')) {
-      removeCookie('providerId');
-    }
-    if (getCookie('token')) {
-      removeCookie('token');
-    }
-    // if super admin, remove all cookies
-    if (getCookie('isSuperAdmin')) {
-      removeCookie('isSuperAdmin');
-    }
-
-    // remove userRole from localStorage
-    if (localStorage.getItem('userRole')) {
-      localStorage.removeItem('userRole');
-    }
-
-    // Redirect to home page - refresh the page
-    router.push('/');
+  // Keep a callback to trigger logout using hook, plus hard refresh to fully reset UI if desired
+  const onLogoutClick = () => {
+    handleLogout();
+    // Optional: force refresh for components not using the hook yet
     window.location.reload();
   };
 
@@ -145,114 +162,197 @@ const Navbar: React.FC = () => {
                 <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg opacity-0 invisible
                               group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-100">
                   <div className="p-4 space-y-3">
-                    {/* User Type Header */}
+                    {/* User Type Header with Profile Image */}
                     <div className="flex items-center gap-3 px-3 py-2 bg-teal-50 rounded-lg border border-teal-100">
+                      {/* Profile Image - Only for clients */}
+                      {isClient && userData && (
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-teal-200 flex-shrink-0">
+                          <img
+                            src={getProfileImage(userData.profileImage, API_BASE_URL, getDefaultClientImage())}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = getDefaultClientImage();
+                            }}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Provider Profile Image */}
+                      {isProvider && (
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-teal-200 flex-shrink-0">
+                          {userData && userData.profileImage ? (
+                            <img
+                              src={getProfileImage(userData.profileImage, API_BASE_URL, getDefaultProviderImage())}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = getDefaultProviderImage();
+                              }}
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold text-lg">
+                              {userData ? (userData.firstName?.[0] || userData.username?.[0] || 'P') : 'P'}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
                       <div className="flex flex-col">
                         <span className="text-lg font-bold text-teal-600">
                           {isProvider ? 'Provider' : 'Client'}
                         </span>
-                        <span className="text-xs text-gray-500">Click to edit</span>
+                        {userData && (
+                          <span className="text-sm text-gray-600">
+                            {userData.firstName} {userData.lastName}
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Latest Jobs */}
-                    <a
-                      href="/latest-jobs"
-                      className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                    >
-                      <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
-                      <span
-                        data-editable
-                        data-key="navbar.latestJobs"
-                        className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
-                      >
-                        {t('navbar.latestJobs')}
-                      </span>
-                    </a>
-
-                    {/* Favorites - Only for clients */}
+                    {/* CLIENT MENU ITEMS */}
                     {isClient && (
-                      <a
-                        href={`/favorites/${getCookie('clientId')}`}
-                        className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                      >
-                        <FiHeart className="w-4 h-4 flex-shrink-0" />
-                        <span
-                          data-editable
-                          data-key="navbar.favorites"
-                          className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                      <>
+                        {/* Marketplace - Primary action */}
+                        <a
+                          href="/marketPlace"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          {t('navbar.favorites')}
-                        </span>
-                      </a>
+                          <FiBriefcase className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.marketplace"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.marketplace')}
+                          </span>
+                        </a>
+
+                        {/* Create General Request - Quick action */}
+                        <button
+                          onClick={() => setIsGeneralRequestOpen(true)}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
+                        >
+                          <FiMessageSquare className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="createGeneralRequest"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('createGeneralRequest')}
+                          </span>
+                        </button>
+
+                        {/* Latest Jobs */}
+                        <a
+                          href="/latest-jobs"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
+                        >
+                          <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.latestJobs"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.latestJobs')}
+                          </span>
+                        </a>
+
+                        {/* Favorites */}
+                        <a
+                          href={`/favorites/${getCookie('clientId')}`}
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
+                        >
+                          <FiHeart className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.favorites"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.favorites')}
+                          </span>
+                        </a>
+
+                        {/* Edit Profile */}
+                        <a
+                          href="/register/client?step=2"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
+                        >
+                          <FiUser className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.editProfile"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.editProfile')}
+                          </span>
+                        </a>
+                      </>
                     )}
 
-                    {/* Edit Profile - Only for providers */}
+                    {/* PROVIDER MENU ITEMS */}
                     {isProvider && (
-                      <a
-                        href="/register/provider?step=2"
-                        className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                      >
-                        <FiUser className="w-4 h-4 flex-shrink-0" />
-                        <span
-                          data-editable
-                          data-key="navbar.editProfile"
-                          className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                      <>
+                        {/* Latest Jobs */}
+                        <a
+                          href="/latest-jobs"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          {t('navbar.editProfile')}
-                        </span>
-                      </a>
-                    )}
+                          <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.latestJobs"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.latestJobs')}
+                          </span>
+                        </a>
 
-                    {/* Monthly Balance - Only for providers */}
-                    {isProvider && (
-                      <a
-                        href="/monthly-balance"
-                        className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                      >
-                        <FiDollarSign className="w-4 h-4 flex-shrink-0" />
-                        <span
-                          data-editable
-                          data-key="navbar.balance"
-                          className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                        {/* General Jobs */}
+                        <a
+                          href="/general-requests"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          {t('navbar.balance')}
-                        </span>
-                      </a>
-                    )}
+                          <FiBriefcase className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.generalJobs"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.generalJobs')}
+                          </span>
+                        </a>
 
-                    {/* General Requests - Only for clients */}
-                    {isClient && (
-                      <a
-                        href="/register/client?step=2"
-                        className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                      >
-                        <FiMessageSquare className="w-4 h-4 flex-shrink-0" />
-                        <span
-                          data-editable
-                          data-key="navbar.requests"
-                          className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                        {/* Monthly Balance */}
+                        <a
+                          href="/monthly-balance"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          {t('navbar.requests')}
-                        </span>
-                      </a>
-                    )}
+                          <FiDollarSign className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.balance"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.balance')}
+                          </span>
+                        </a>
 
-                    {/* Edit Profile - Only for clients */}
-                    {isClient && (
-                      <a
-                        href="/register/client?step=2"
-                        className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                      >
-                        <FiUser className="w-4 h-4 flex-shrink-0" />
-                        <span
-                          data-editable
-                          data-key="navbar.editProfile"
-                          className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                        {/* Edit Profile */}
+                        <a
+                          href="/register/provider?step=2"
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          {t('navbar.editProfile')}
-                        </span>
-                      </a>
+                          <FiUser className="w-4 h-4 flex-shrink-0" />
+                          <span
+                            data-editable
+                            data-key="navbar.editProfile"
+                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
+                          >
+                            {t('navbar.editProfile')}
+                          </span>
+                        </a>
+                      </>
                     )}
 
                     {/* Divider */}
@@ -297,6 +397,17 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
+
+      {/* General Request Modal */}
+      <BookingSheet
+        open={isGeneralRequestOpen}
+        onOpenChange={setIsGeneralRequestOpen}
+        isGeneralRequest={true}
+        onSuccess={() => {
+          setIsGeneralRequestOpen(false);
+          toast.success(t('requestSuccess', 'General request sent successfully!'));
+        }}
+      />
     </div>
   );
 };

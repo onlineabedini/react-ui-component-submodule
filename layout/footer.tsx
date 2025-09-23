@@ -3,11 +3,13 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 // EditableText import removed - using data-editable attributes instead
 
 // Rename component
 const UiFooter: React.FC = () => {
   const { t } = useTranslation();
+  const { isLoggedIn } = useAuth();
 
   // Handle CTA button click
   const handleCTAClick = () => {
@@ -21,45 +23,47 @@ const UiFooter: React.FC = () => {
 
   return (
     <footer className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 mt-10">
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-teal-600 to-teal-500 py-12 px-6">
-        <div className="container mx-auto max-w-7xl text-center">
-          <h2 className="text-3xl font-bold text-white mb-4 break-words">
-            <span
-              data-editable
-              data-key="footer.cta.title"
-              className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
+      {/* CTA Section - Only show for non-logged-in users */}
+      {!isLoggedIn && (
+        <div className="bg-gradient-to-r from-teal-600 to-teal-500 py-12 px-6">
+          <div className="container mx-auto max-w-7xl text-center">
+            <h2 className="text-3xl font-bold text-white mb-4 break-words">
+              <span
+                data-editable
+                data-key="footer.cta.title"
+                className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
+              >
+                {t('footer.cta.title')}
+              </span>
+            </h2>
+            <div className="text-teal-100 text-lg mb-8 max-w-2xl mx-auto break-words">
+              <span
+                data-editable
+                data-key="footer.cta.description"
+                className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
+              >
+                {t('footer.cta.description')}
+              </span>
+            </div>
+            <div
+              onClick={handleCTAClick}
+              className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-xl text-white bg-transparent hover:bg-white hover:text-teal-600 transition-all duration-300 transform hover:scale-105 break-words cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && handleCTAClick()}
             >
-              {t('footer.cta.title')}
-            </span>
-          </h2>
-          <div className="text-teal-100 text-lg mb-8 max-w-2xl mx-auto break-words">
-            <span
-              data-editable
-              data-key="footer.cta.description"
-              className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
-            >
-              {t('footer.cta.description')}
-            </span>
-          </div>
-          <div
-            onClick={handleCTAClick}
-            className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-xl text-white bg-transparent hover:bg-white hover:text-teal-600 transition-all duration-300 transform hover:scale-105 break-words cursor-pointer"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleCTAClick()}
-          >
-            <span
-              onClick={(e) => { e.stopPropagation(); }}
-              data-editable
-              data-key="footer.cta.button"
-              className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
-            >
-              {t('footer.cta.button')}
-            </span>
+              <span
+                onClick={(e) => { e.stopPropagation(); }}
+                data-editable
+                data-key="footer.cta.button"
+                className="break-words cursor-pointer hover:bg-white/20 px-2 py-1 rounded transition-colors"
+              >
+                {t('footer.cta.button')}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Contact Us Section */}
       <div className="bg-white py-12 px-6 border-b border-gray-200">
