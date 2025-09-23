@@ -59,7 +59,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     },
     { 
       label: "This week", 
-      getDates: () => ({ startDate: startOfWeek(new Date()), endDate: endOfWeek(new Date()) }),
+      getDates: () => ({ startDate: startOfWeek(new Date(), { weekStartsOn: 1 }), endDate: endOfWeek(new Date(), { weekStartsOn: 1 }) }),
       disabled: false
     },
     { 
@@ -122,8 +122,8 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
   };
 
   const getCalendarDays = (month: Date) => {
-    const start = startOfWeek(startOfMonth(month));
-    const end = endOfWeek(endOfMonth(month));
+    const start = startOfWeek(startOfMonth(month), { weekStartsOn: 1 });
+    const end = endOfWeek(endOfMonth(month), { weekStartsOn: 1 });
     return eachDayOfInterval({ start, end });
   };
 
@@ -200,7 +200,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                 </div>
 
                 <div className="grid grid-cols-7 gap-2 mb-3 px-2">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
                     <div key={day} className="text-gray-600 text-xs font-medium text-center py-2">
                       {day}
                     </div>
@@ -262,7 +262,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                 </div>
 
                 <div className="grid grid-cols-7 gap-2 mb-3 px-2">
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
                     <div key={day} className="text-gray-600 text-xs font-medium text-center py-2">
                       {day}
                     </div>
