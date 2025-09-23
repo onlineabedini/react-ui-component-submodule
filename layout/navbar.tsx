@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   // Auth state (reactive via polling in useAuth)
-  const { isLoggedIn, isProvider, isClient, handleLogout } = useAuth();
+  const { isLoggedIn, isProvider, isClient, isSuperAdminUser, handleLogout } = useAuth();
   // State for general request modal
   const [isGeneralRequestOpen, setIsGeneralRequestOpen] = useState(false);
   // State for user data

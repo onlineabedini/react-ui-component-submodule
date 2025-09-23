@@ -150,7 +150,7 @@ const GlobalEditorModal: React.FC = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
           placeholder="Enter your text here..."
           autoFocus
         />
@@ -168,7 +168,7 @@ const GlobalEditorModal: React.FC = () => {
             <Button 
               onClick={handleSave} 
               disabled={isSaving}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              className="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white"
             >
               <FiSave className="h-4 w-4 mr-2" />
               {isSaving ? 'Saving...' : 'Save'}
