@@ -65,7 +65,7 @@ const GlobalEditorModal: React.FC = () => {
     try {
       const apiUrl = getApiUrl(API_ENDPOINTS.UPDATE_TRANSLATION);
       const requestBody = {
-        language: i18n.language,
+        language: i18n.language.split('-')[0], // Normalize locale codes like 'en-US' to 'en'
         key: key,
         value: value,
       };
