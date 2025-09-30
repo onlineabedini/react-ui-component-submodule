@@ -93,17 +93,15 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     if (!dateRange.startDate || (dateRange.startDate && dateRange.endDate)) {
       setDateRange({ startDate: date, endDate: null });
     } else {
+      let newRange;
       if (date < dateRange.startDate) {
-        setDateRange({ startDate: date, endDate: dateRange.startDate });
+        newRange = { startDate: date, endDate: dateRange.startDate };
       } else {
-        setDateRange({ startDate: dateRange.startDate, endDate: date });
+        newRange = { startDate: dateRange.startDate, endDate: date };
       }
-    }
-  };
-
-  const handleConfirm = () => {
-    if (dateRange.startDate && dateRange.endDate) {
-      onChange([formatDateEuropean(dateRange.startDate), formatDateEuropean(dateRange.endDate)]);
+      setDateRange(newRange);
+      // Auto-apply when both dates are selected
+      onChange([formatDateEuropean(newRange.startDate), formatDateEuropean(newRange.endDate)]);
       setIsOpen(false);
     }
   };
@@ -305,21 +303,13 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={() => setIsOpen(false)}
-              className="px-6 py-3 text-gray-600 hover:text-gray-900 transition-colors font-medium rounded-lg hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleConfirm}
-              disabled={!dateRange.startDate || !dateRange.endDate}
-              className="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
-            >
-              Apply
-            </button>
+          {/* Info Footer */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500 text-center">
+              {dateRange.startDate && !dateRange.endDate 
+                ? "Select end date to complete your range" 
+                : "Select start and end dates for your booking"}
+            </p>
           </div>
         </div>
       )}
