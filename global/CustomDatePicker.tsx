@@ -39,6 +39,36 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Sync internal dateRange state with value prop
+  useEffect(() => {
+    if (value && Array.isArray(value) && value.length > 0) {
+      try {
+        // Parse dates from the value array (format: 'DD/MM/YYYY')
+        const parseEuropeanDate = (dateStr: string): Date | null => {
+          if (!dateStr) return null;
+          const parts = dateStr.split('/');
+          if (parts.length === 3) {
+            const [day, month, year] = parts;
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          }
+          return null;
+        };
+
+        const startDate = parseEuropeanDate(value[0]);
+        const endDate = value.length >= 2 ? parseEuropeanDate(value[1]) : startDate;
+        
+        if (startDate && endDate) {
+          setDateRange({ startDate, endDate });
+        }
+      } catch (error) {
+        console.error('Error parsing date range:', error);
+      }
+    } else if (!value || (Array.isArray(value) && value.length === 0)) {
+      // Reset dateRange if value is empty
+      setDateRange({ startDate: null, endDate: null });
+    }
+  }, [value]);
+
   // Check if today is still bookable (before 5 PM)
   const isTodayBookable = (): boolean => {
     const now = new Date();
