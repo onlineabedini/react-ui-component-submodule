@@ -151,7 +151,7 @@ const GlobalEditorModal: React.FC = () => {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-          placeholder="Enter your text here..."
+          placeholder={t('common.enterTextHere')}
           autoFocus
         />
         

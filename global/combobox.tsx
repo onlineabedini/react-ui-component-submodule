@@ -1,6 +1,7 @@
 "use client";
 // Combobox: Custom combobox with search and filtering
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ComboboxProps {
   label?: string;
@@ -52,6 +53,7 @@ function getTextFromReactNode(node: React.ReactNode): string {
 }
 
 export const Combobox: React.FC<ComboboxProps> = ({ label, children, disabled = false }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -124,7 +126,7 @@ export const Combobox: React.FC<ComboboxProps> = ({ label, children, disabled = 
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search..."
+              placeholder={t('common.search')}
               className="w-full px-2 py-1 border border-gray-200 rounded focus:outline-none focus:border-teal-400 text-sm"
               autoFocus
               disabled={disabled}

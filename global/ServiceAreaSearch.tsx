@@ -4,8 +4,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { StockholmAreas } from "@/lists/stockholmAreas";
 import { MapPin } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const ServiceAreaSearch: React.FC = () => {
+    const { t } = useTranslation();
     const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -67,7 +69,7 @@ const ServiceAreaSearch: React.FC = () => {
                             setIsOpen(true);
                         }}
                         onFocus={() => setIsOpen(true)}
-                        placeholder="Search service areas..."
+                        placeholder={t('common.searchServiceAreas')}
                         className="w-full px-4 py-3 text-lg rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                     />
                     {isOpen && filteredAreas.length > 0 && (
