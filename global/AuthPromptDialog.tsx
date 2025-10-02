@@ -42,10 +42,22 @@ const AuthPromptDialog: React.FC<AuthPromptDialogProps> = ({
       <DialogContent className="sm:max-w-md bg-white">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900">
-            {t('loginRequired') || 'Login Required'}
+            <span 
+              data-editable 
+              data-key="loginRequired" 
+              className="cursor-pointer px-2 py-1 rounded transition-colors"
+            >
+              {t('loginRequired') || 'Login Required'}
+            </span>
           </DialogTitle>
           <DialogDescription className="text-gray-600 mt-2">
-            {t('loginRequiredForBooking') || 'To book a service, you need to be logged in as a client. Please login or register to continue.'}
+            <span 
+              data-editable 
+              data-key="loginRequiredForBooking" 
+              className="cursor-pointer px-2 py-1 rounded transition-colors"
+            >
+              {t('loginRequiredForBooking') || 'To book a service, you need to be logged in as a client. Please login or register to continue.'}
+            </span>
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 mt-6">
@@ -53,13 +65,25 @@ const AuthPromptDialog: React.FC<AuthPromptDialogProps> = ({
             onClick={handleLogin}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white"
           >
-            {t('login') || 'Login'}
+            <span 
+              data-editable 
+              data-key="login" 
+              className="cursor-pointer px-2 py-1 rounded transition-colors"
+            >
+              {t('login') || 'Login'}
+            </span>
           </Button>
           <Button
             onClick={handleRegister}
             className="w-full bg-white hover:bg-gray-50 text-teal-600 border border-teal-600"
           >
-            {t('registerAsClient') || 'Register as Client'}
+            <span 
+              data-editable 
+              data-key="registerAsClient" 
+              className="cursor-pointer px-2 py-1 rounded transition-colors"
+            >
+              {t('registerAsClient') || 'Register as Client'}
+            </span>
           </Button>
         </div>
       </DialogContent>

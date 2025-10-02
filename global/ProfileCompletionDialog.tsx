@@ -77,12 +77,30 @@ const ProfileCompletionDialog: React.FC<ProfileCompletionDialogProps> = ({
             <AlertTriangle className="w-8 h-8 text-orange-600" />
           </div>
           <DialogTitle className="text-xl font-bold text-gray-900">
-            {t('profileCompletion.title') || 'Complete Your Profile'}
+            <span 
+              data-editable 
+              data-key="profileCompletion.title" 
+              className="cursor-pointer px-2 py-1 rounded transition-colors"
+            >
+              {t('profileCompletion.title') || 'Complete Your Profile'}
+            </span>
           </DialogTitle>
           <DialogDescription className="text-gray-600 mt-2">
             {hasAnyData 
-              ? (t('profileCompletion.description.partial') || 'You need to complete a few more fields before accepting jobs.')
-              : (t('profileCompletion.description.empty') || 'Please complete your security and payment information to start accepting jobs.')
+              ? (<span 
+                  data-editable 
+                  data-key="profileCompletion.description.partial" 
+                  className="cursor-pointer px-2 py-1 rounded transition-colors"
+                >
+                  {t('profileCompletion.description.partial') || 'You need to complete a few more fields before accepting jobs.'}
+                </span>)
+              : (<span 
+                  data-editable 
+                  data-key="profileCompletion.description.empty" 
+                  className="cursor-pointer px-2 py-1 rounded transition-colors"
+                >
+                  {t('profileCompletion.description.empty') || 'Please complete your security and payment information to start accepting jobs.'}
+                </span>)
             }
           </DialogDescription>
         </DialogHeader>
@@ -93,10 +111,22 @@ const ProfileCompletionDialog: React.FC<ProfileCompletionDialogProps> = ({
               <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-amber-800 mb-1">
-                  {t('profileCompletion.whyNeeded') || 'Why is this needed?'}
+                  <span 
+                    data-editable 
+                    data-key="profileCompletion.whyNeeded" 
+                    className="cursor-pointer px-2 py-1 rounded transition-colors"
+                  >
+                    {t('profileCompletion.whyNeeded') || 'Why is this needed?'}
+                  </span>
                 </h4>
                 <p className="text-sm text-amber-700">
-                  {t('profileCompletion.whyNeededDescription') || 'For security and payment processing, we need to verify your identity and set up your payment information before you can accept jobs.'}
+                  <span 
+                    data-editable 
+                    data-key="profileCompletion.whyNeededDescription" 
+                    className="cursor-pointer px-2 py-1 rounded transition-colors"
+                  >
+                    {t('profileCompletion.whyNeededDescription') || 'For security and payment processing, we need to verify your identity and set up your payment information before you can accept jobs.'}
+                  </span>
                 </p>
               </div>
             </div>
@@ -104,7 +134,13 @@ const ProfileCompletionDialog: React.FC<ProfileCompletionDialogProps> = ({
 
           <div className="space-y-3">
             <h4 className="font-medium text-gray-900 mb-2">
-              {t('profileCompletion.missingFields') || 'Missing Information:'}
+              <span 
+                data-editable 
+                data-key="profileCompletion.missingFields" 
+                className="cursor-pointer px-2 py-1 rounded transition-colors"
+              >
+                {t('profileCompletion.missingFields') || 'Missing Information:'}
+              </span>
             </h4>
             {missingFields.map((field, index) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
