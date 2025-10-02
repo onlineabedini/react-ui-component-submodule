@@ -27,6 +27,8 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
   });
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,6 +40,41 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Calculate dropdown position when it opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      const updatePosition = () => {
+        if (inputRef.current) {
+          const rect = inputRef.current.getBoundingClientRect();
+          const dropdownWidth = 750; // min-w-[750px]
+          const viewportWidth = window.innerWidth;
+          
+          // Calculate left position to keep dropdown on screen
+          let left = rect.left;
+          if (left + dropdownWidth > viewportWidth) {
+            left = viewportWidth - dropdownWidth - 20; // 20px margin from edge
+          }
+          
+          setDropdownPosition({
+            top: rect.bottom + 8, // 8px gap
+            left: Math.max(20, left), // At least 20px from left edge
+          });
+        }
+      };
+
+      updatePosition();
+
+      // Update position on scroll and resize
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
+    }
+  }, [isOpen]);
 
   // Sync internal dateRange state with value prop
   useEffect(() => {
@@ -169,6 +206,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
     <div className="relative" ref={pickerRef}>
       <div className="relative">
         <input
+          ref={inputRef}
           type="text"
           value={displayValue()}
         placeholder={placeholder}
@@ -176,11 +214,17 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
           readOnly
           className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 cursor-pointer"
         />
-        <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
+        <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
       </div>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-2xl p-6 min-w-[750px]">
+        <div 
+          className="fixed z-[9999] bg-white border border-gray-200 rounded-xl shadow-2xl p-6 min-w-[750px]"
+          style={{
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+          }}
+        >
           <div className="flex gap-8">
             {/* Left Sidebar - Predefined Ranges */}
             <div className="w-36">
