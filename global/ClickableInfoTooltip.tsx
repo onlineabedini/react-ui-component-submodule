@@ -54,9 +54,12 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
   
 
-  // Close tooltip when clicking outside
+  // Close tooltip when clicking outside (but not on right-click/context menu)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Ignore right-clicks (context menu)
+      if (event.button === 2) return;
+      
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
@@ -171,10 +174,6 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
     <div 
       ref={containerRef} 
       className="relative inline-block"
-      onContextMenu={(e) => {
-        // Allow right-click context menu on the icon
-        e.stopPropagation();
-      }}
     >
       {/* Info Icon Button */}
       <button
@@ -182,6 +181,11 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
         type="button"
         onClick={toggleTooltip}
         onKeyDown={handleKeyDown}
+        onContextMenu={(e) => {
+          // Prevent context menu on the icon itself
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         className={`mx-2 inline-flex items-center justify-center w-5 h-5 ${
           isOpen ? 'text-teal-400' : 'text-teal-600'
         } hover:text-teal-700 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-1 rounded ${iconClassName}`}
@@ -194,14 +198,16 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
       {/* Tooltip Content */}
       {isOpen && (!usePortal ? (
         <div 
-          className={`${getPositionClasses()} z-[9999] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
-          onContextMenu={(e) => {
-            e.stopPropagation();
-          }}
+          className={`${getPositionClasses()} z-[9998] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
         >
           <button
             type="button"
             onClick={() => setIsOpen(false)}
+            onContextMenu={(e) => {
+              // Prevent context menu on the close button
+              e.stopPropagation();
+              e.preventDefault();
+            }}
             className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="Close tooltip"
           >
@@ -213,6 +219,7 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
             data-editable 
             data-key={translationKey}
             className="block pr-6 cursor-pointer px-2 py-1 rounded transition-colors hover:bg-teal-50"
+            style={{ pointerEvents: 'auto' }}
           >
             {t(translationKey) || fallbackText}
           </span>
@@ -220,15 +227,17 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
       ) : (
         createPortal(
           <div 
-            className={`fixed z-[99999] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
+            className={`fixed z-[9998] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
             style={{ top: coords?.top ?? 0, left: coords?.left ?? 0 }}
-            onContextMenu={(e) => {
-              e.stopPropagation();
-            }}
           >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
+              onContextMenu={(e) => {
+                // Prevent context menu on the close button
+                e.stopPropagation();
+                e.preventDefault();
+              }}
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="Close tooltip"
             >
@@ -240,6 +249,7 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
               data-editable 
               data-key={translationKey}
               className="block pr-6 cursor-pointer px-2 py-1 rounded transition-colors hover:bg-teal-50"
+              style={{ pointerEvents: 'auto' }}
             >
               {t(translationKey) || fallbackText}
             </span>
