@@ -124,7 +124,9 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-teal-300/20 rounded-full blur-2xl z-0" />
       {/* Title */}
       <h3 className="text-xl font-extrabold text-teal-700 mb-4 text-center z-10 drop-shadow-sm tracking-tight">
-        {t('availability', 'Availability')}
+        <span data-editable data-key="availability">
+          {t('availability', 'Availability')}
+        </span>
       </h3>
       {/* Calendar Table */}
       <div className="overflow-x-auto w-full z-10">
@@ -134,7 +136,9 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
               <th className="p-2"></th>
               {CALENDAR_CONFIG.DAYS.map((day) => (
                 <th key={day} className="text-teal-700 text-xs font-bold pb-2 px-2 tracking-wide">
-                  {t(`calendar.days.${day.toLowerCase()}`, day)}
+                  <span data-editable data-key={`calendar.days.${day.toLowerCase()}`}>
+                    {t(`calendar.days.${day.toLowerCase()}`, day)}
+                  </span>
                 </th>
               ))}
             </tr>
@@ -143,7 +147,9 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
             {CALENDAR_CONFIG.TIMES.map((time) => (
               <tr key={time} className="border-t border-teal-100">
                 <td className="font-semibold text-teal-700 text-xs py-2 pr-2">
-                  {t(`calendar.times.${time.toLowerCase()}`, time)}
+                  <span data-editable data-key={`calendar.times.${time.toLowerCase()}`}>
+                    {t(`calendar.times.${time.toLowerCase()}`, time)}
+                  </span>
                 </td>
                 {CALENDAR_CONFIG.DAYS.map((day) => (
                   <td key={day} className="p-1 text-center">
