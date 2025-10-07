@@ -170,11 +170,15 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       <div className="mt-6 flex items-center justify-center gap-8 text-teal-700 z-10">
         <div className="flex items-center gap-2">
           <span className="inline-block w-4 h-4 rounded-full bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 shadow-md border-2 border-white" />
-          <span className="text-xs font-semibold">{t('available', 'Available')}</span>
+          <span className="text-xs font-semibold">
+            <span data-editable data-key="available">{t('available', 'Available')}</span>
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="inline-block w-4 h-4 rounded-full bg-gray-200 shadow-inner border-2 border-white" />
-          <span className="text-xs font-semibold">{t('unavailable', 'Unavailable')}</span>
+          <span className="text-xs font-semibold">
+            <span data-editable data-key="unavailable">{t('unavailable', 'Unavailable')}</span>
+          </span>
         </div>
       </div>
       {/* Subtle animation for available slots */}
