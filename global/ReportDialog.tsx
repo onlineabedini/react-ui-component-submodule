@@ -584,7 +584,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                 </Label>
                 {formData.advantages.length > 0 && (
                   <div className="mb-4 p-3 bg-teal-50 rounded-lg border border-teal-200">
-                    <h4 className="text-sm font-medium text-teal-800 mb-2">Selected:</h4>
+                    <h4 className="text-sm font-medium text-teal-800 mb-2"><span data-editable data-key="selected">{t("selected") || "Selected:"}</span></h4>
                     <div className="flex flex-wrap gap-2">
                       {formData.advantages.map((advantage) => (
                         <div
@@ -632,7 +632,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                 </Label>
                 {formData.disadvantages.length > 0 && (
                   <div className="mb-4 p-3 bg-red-100 rounded-lg border border-red-200">
-                    <h4 className="text-sm font-medium text-red-800 mb-2">Selected:</h4>
+                    <h4 className="text-sm font-medium text-red-800 mb-2"><span data-editable data-key="selected">{t("selected") || "Selected:"}</span></h4>
                     <div className="flex flex-wrap gap-2">
                       {formData.disadvantages.map((disadvantage) => (
                         <div
@@ -839,7 +839,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {existingReport.advantages && existingReport.advantages.length > 0 && (
                       <div className="bg-white p-4 rounded-lg border border-purple-100">
-                        <h4 className="text-sm font-medium text-purple-700 mb-2">Positive Aspects</h4>
+                        <h4 className="text-sm font-medium text-purple-700 mb-2"><span data-editable data-key="positiveAspects">{t("positiveAspects") || "Positive Aspects"}</span></h4>
                         <div className="flex flex-wrap gap-2">
                           {existingReport.advantages.map((advantage) => (
                             <div
@@ -855,7 +855,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                     )}
                     {existingReport.disadvantages && existingReport.disadvantages.length > 0 && (
                       <div className="bg-white p-4 rounded-lg border border-purple-100">
-                        <h4 className="text-sm font-medium text-purple-700 mb-2">Areas for Improvement</h4>
+                        <h4 className="text-sm font-medium text-purple-700 mb-2"><span data-editable data-key="areasForImprovement">{t("areasForImprovement") || "Areas for Improvement"}</span></h4>
                         <div className="flex flex-wrap gap-2">
                           {existingReport.disadvantages.map((disadvantage) => (
                             <div

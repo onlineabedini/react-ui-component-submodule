@@ -73,7 +73,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({
         {editable && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
             <span className="text-white text-sm font-medium px-3 py-1 bg-teal-500/80 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              {t("Change Photo")}
+              <span data-editable data-key="changePhoto">{t("changePhoto") || "Change Photo"}</span>
             </span>
           </div>
         )}
