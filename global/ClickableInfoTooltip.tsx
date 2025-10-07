@@ -182,9 +182,12 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
         onClick={toggleTooltip}
         onKeyDown={handleKeyDown}
         onContextMenu={(e) => {
-          // Prevent context menu on the icon itself
-          e.stopPropagation();
-          e.preventDefault();
+          // Only prevent context menu on the icon itself, not on editable content
+          const target = e.target as HTMLElement;
+          if (!target.hasAttribute('data-editable') && !target.closest('[data-editable]')) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
         }}
         className={`mx-2 inline-flex items-center justify-center w-5 h-5 ${
           isOpen ? 'text-teal-400' : 'text-teal-600'
@@ -199,12 +202,19 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
       {isOpen && (!usePortal ? (
         <div 
           className={`${getPositionClasses()} z-[9998] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
+          onContextMenu={(e) => {
+            // Allow context menu on editable content
+            const target = e.target as HTMLElement;
+            if (target.hasAttribute('data-editable') || target.closest('[data-editable]')) {
+              return; // Let the event propagate for editable content
+            }
+          }}
         >
           <button
             type="button"
             onClick={() => setIsOpen(false)}
             onContextMenu={(e) => {
-              // Prevent context menu on the close button
+              // Prevent context menu on the close button only
               e.stopPropagation();
               e.preventDefault();
             }}
@@ -229,12 +239,19 @@ const ClickableInfoTooltip: React.FC<ClickableInfoTooltipProps> = ({
           <div 
             className={`fixed z-[9998] w-72 px-4 py-3 text-sm text-teal-900 bg-white border border-teal-500 rounded-lg shadow-xl shadow-teal-100 animate-fade-in ${tooltipClassName}`}
             style={{ top: coords?.top ?? 0, left: coords?.left ?? 0 }}
+            onContextMenu={(e) => {
+              // Allow context menu on editable content
+              const target = e.target as HTMLElement;
+              if (target.hasAttribute('data-editable') || target.closest('[data-editable]')) {
+                return; // Let the event propagate for editable content
+              }
+            }}
           >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
               onContextMenu={(e) => {
-                // Prevent context menu on the close button
+                // Prevent context menu on the close button only
                 e.stopPropagation();
                 e.preventDefault();
               }}
