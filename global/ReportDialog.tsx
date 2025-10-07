@@ -459,12 +459,16 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <FileText className="w-6 h-6 text-teal-600" />
-            {mode === 'create' ? 'Create Service Report' : mode === 'accept' ? 'Review Service Report' : 'Service Report'}
+            <span data-editable data-key={mode === 'create' ? 'serviceReport.createTitle' : mode === 'accept' ? 'serviceReport.reviewTitle' : 'serviceReport.viewTitle'}>
+              {mode === 'create' ? 'Create Service Report' : mode === 'accept' ? 'Review Service Report' : 'Service Report'}
+            </span>
           </DialogTitle>
           <DialogDescription className="text-gray-600">
-            {mode === 'create' ? 'Please provide details about the service you provided.' : 
-             mode === 'accept' ? 'Review the service report and provide your feedback.' : 
-             'Service report details.'}
+            <span data-editable data-key={mode === 'create' ? 'serviceReport.createDescription' : mode === 'accept' ? 'serviceReport.reviewDescription' : 'serviceReport.viewDescription'}>
+              {mode === 'create' ? 'Please provide details about the service you provided.' : 
+               mode === 'accept' ? 'Review the service report and provide your feedback.' : 
+               'Service report details.'}
+            </span>
           </DialogDescription>
         </DialogHeader>
 
@@ -474,7 +478,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
             <div className="space-y-4 p-6 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 shadow-sm">
               <Label className="text-xl font-semibold text-gray-900 flex items-center justify-center gap-2">
                 <Star className="w-6 h-6 text-yellow-400" />
-                {t('serviceReport.serviceRating')}
+                <span data-editable data-key="serviceReport.serviceRating">
+                  {t('serviceReport.serviceRating')}
+                </span>
               </Label>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                 <div className="flex justify-center">
@@ -507,7 +513,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
             <div className="space-y-4 p-6 bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-100 shadow-sm">
               <Label className="text-lg font-semibold text-blue-900 flex items-center gap-2 mb-2">
                 <Clock className="w-5 h-5 text-blue-600" />
-                {t('serviceReport.serviceDetails')}
+                <span data-editable data-key="serviceReport.serviceDetails">
+                  {t('serviceReport.serviceDetails')}
+                </span>
               </Label>
               {booking?.bookingDate && booking.bookingDate.length > 0 && (
                 <div className="flex items-center mb-2">
@@ -570,7 +578,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
               <div className="flex-1 space-y-4 bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm">
                 <Label className="text-lg font-semibold text-green-800 flex items-center gap-2">
                   <ThumbsUp className="w-5 h-5 text-green-600" />
-                  Positive Aspects
+                  <span data-editable data-key="serviceReport.positiveAspects">
+                    Positive Aspects
+                  </span>
                 </Label>
                 {formData.advantages.length > 0 && (
                   <div className="mb-4 p-3 bg-teal-50 rounded-lg border border-teal-200">
@@ -616,7 +626,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
               <div className="flex-1 space-y-4 bg-red-50 border border-red-100 rounded-xl p-4 shadow-sm">
                 <Label className="text-lg font-semibold text-red-800 flex items-center gap-2">
                   <ThumbsDown className="w-5 h-5 text-red-600" />
-                  Areas for Improvement
+                  <span data-editable data-key="serviceReport.areasForImprovement">
+                    Areas for Improvement
+                  </span>
                 </Label>
                 {formData.disadvantages.length > 0 && (
                   <div className="mb-4 p-3 bg-red-100 rounded-lg border border-red-200">
@@ -666,7 +678,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
             <div className="space-y-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
               <Label className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-teal-600" />
-                Additional Comments
+                <span data-editable data-key="serviceReport.additionalComments">
+                  Additional Comments
+                </span>
               </Label>
               <div className={`relative ${isReportFullyAccepted ? 'opacity-50' : ''}`}>
                 <div className="border rounded-lg overflow-hidden">
@@ -887,7 +901,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                 disabled={loading}
                 className="bg-teal-600 hover:bg-teal-700 text-white"
               >
-                {loading ? 'Creating...' : 'Create Report'}
+                <span data-editable data-key={loading ? "serviceReport.creating" : "serviceReport.createReport"}>
+                  {loading ? 'Creating...' : 'Create Report'}
+                </span>
               </Button>
             </>
           )}
@@ -906,7 +922,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   <X className="w-4 h-4 mr-2" />
-                  {loading ? 'Rejecting...' : 'Reject'}
+                  <span data-editable data-key={loading ? "serviceReport.rejecting" : "serviceReport.reject"}>
+                    {loading ? 'Rejecting...' : 'Reject'}
+                  </span>
                 </Button>
                 <Button 
                   onClick={handleAcceptReport} 
@@ -914,7 +932,9 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <Check className="w-4 h-4 mr-2" />
-                  {loading ? 'Accepting...' : 'Accept Report'}
+                  <span data-editable data-key={loading ? "serviceReport.accepting" : "serviceReport.acceptReport"}>
+                    {loading ? 'Accepting...' : 'Accept Report'}
+                  </span>
                 </Button>
               </div>
             </div>
