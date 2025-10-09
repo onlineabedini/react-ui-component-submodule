@@ -748,7 +748,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
                     <EditorContent editor={editor} className="prose max-w-none p-4 min-h-[200px]" />
                     {(!formData.comment || formData.comment === '<p></p>') && (
                       <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
-                        Share your experience, feedback, or any additional details about the service...
+                        {t('serviceReport.placeholder')}
                       </div>
                     )}
                   </div>

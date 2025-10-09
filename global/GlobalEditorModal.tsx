@@ -25,7 +25,7 @@ const GlobalEditorModal: React.FC = () => {
 
   const handleSave = async () => {
     if (!currentElementId) {
-      setError('No element ID provided');
+      setError(t('common.noElementId'));
       return;
     }
 
@@ -119,7 +119,7 @@ const GlobalEditorModal: React.FC = () => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Edit Text</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('common.editText')}</h3>
           <Button variant="ghost" size="icon" onClick={closeEditor} className="hover:bg-gray-100">
             <FiX className="h-4 w-4" />
           </Button>
@@ -158,12 +158,12 @@ const GlobalEditorModal: React.FC = () => {
         <div className="flex justify-between items-center mt-4">
           <Button variant="outline" onClick={handleReset} className="hover:bg-gray-50">
             <FiRotateCcw className="h-4 w-4 mr-2" />
-            Reset
+            {t('common.reset')}
           </Button>
           
           <div className="flex gap-2">
             <Button variant="outline" onClick={closeEditor} className="hover:bg-gray-50">
-              Cancel
+              {t('cancel')}
             </Button>
             <Button 
               onClick={handleSave} 
@@ -171,13 +171,13 @@ const GlobalEditorModal: React.FC = () => {
               className="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white"
             >
               <FiSave className="h-4 w-4 mr-2" />
-              {isSaving ? 'Saving...' : 'Save'}
+              {isSaving ? t('common.saving') : t('common.save')}
             </Button>
           </div>
         </div>
         
         <div className="mt-3 text-xs text-gray-500 text-center">
-          <kbd className="px-2 py-1 bg-gray-100 rounded">Ctrl+Enter</kbd> to save, <kbd className="px-2 py-1 bg-gray-100 rounded">Esc</kbd> to cancel
+          {t('common.keyboardHint')}
         </div>
       </div>
     </div>

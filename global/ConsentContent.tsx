@@ -4,14 +4,20 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
-// --- Helper: Get markdown file path by language (Next.js dynamic import) ---
-async function getMarkdownContent(lang: string): Promise<string> {
+interface ConsentContentProps {
+  // Base path under /assets to load markdown files from
+  // e.g. "/provider-terms-conditions" or "/client-terms-conditions"
+  basePath?: string;
+}
+
+// --- Helper: Get markdown file path by language from public assets ---
+async function getMarkdownContent(lang: string, basePath: string): Promise<string> {
+  const sanitizedBase = basePath.startsWith('/') ? basePath : `/${basePath}`;
+  const fileName = lang === 'sv' ? 'Sv.md' : 'En.md';
+  const url = `/assets${sanitizedBase}/${fileName}`;
   try {
-    if (lang === 'sv') {
-      const res = await fetch('/terms-conditions/Sv.md');
-      return await res.text();
-    }
-    const res = await fetch('/terms-conditions/En.md');
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed');
     return await res.text();
   } catch {
     throw new Error('Failed to load terms.');
@@ -19,8 +25,8 @@ async function getMarkdownContent(lang: string): Promise<string> {
 }
 
 // --- Main ConsentContent component ---
-const ConsentContent: React.FC = () => {
-  const { i18n } = useTranslation();
+const ConsentContent: React.FC<ConsentContentProps> = ({ basePath = "/provider-terms-conditions" }) => {
+  const { t, i18n } = useTranslation();
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,19 +34,19 @@ const ConsentContent: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    getMarkdownContent(i18n.language)
+    getMarkdownContent(i18n.language, basePath)
       .then((text) => {
         setContent(text);
         setLoading(false);
       })
       .catch(() => {
-        setError('Failed to load terms.');
+        setError(t('common.failedToLoadTerms'));
         setLoading(false);
       });
-  }, [i18n.language]);
+  }, [i18n.language, basePath]);
 
   if (loading) {
-    return <div className="text-gray-500 text-sm">Loading terms...</div>;
+    return <div className="text-gray-500 text-sm">{t('common.loadingTerms')}</div>;
   }
   if (error) {
     return <div className="text-red-500 text-sm">{error}</div>;
