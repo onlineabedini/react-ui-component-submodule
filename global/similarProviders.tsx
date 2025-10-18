@@ -167,10 +167,12 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
             
             // Filter providers based on marketplace requirements and admin status
             const filteredData = data.filter((provider: any) => {
-                // Exclude admin and super admin providers
+                // Exclude admin, super admin, and client providers
                 const isSuperAdminUser = isSuperAdmin(provider.email);
                 const isAdmin = provider.role === 'admin';
-                if (isSuperAdminUser || isAdmin) {
+                const isClient = provider.role === 'client';
+                
+                if (isSuperAdminUser || isAdmin || isClient) {
                     return false;
                 }
                 

@@ -16,7 +16,9 @@ const GlobalEditorModal: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('GlobalEditorModal useEffect triggered:', { isOpen, currentText });
     if (isOpen) {
+      console.log('Setting text in modal:', currentText);
       setText(currentText);
       setOriginalText(currentText);
       setError(null);
@@ -113,10 +115,15 @@ const GlobalEditorModal: React.FC = () => {
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    console.log('GlobalEditorModal not rendering - isOpen is false');
+    return null;
+  }
+
+  console.log('GlobalEditorModal rendering - isOpen is true');
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70]">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-900">{t('common.editText')}</h3>
