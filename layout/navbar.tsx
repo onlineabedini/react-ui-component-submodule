@@ -29,6 +29,16 @@ const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Debug mobile detection
+  useEffect(() => {
+    console.log('🔍 Mobile Debug Info:', {
+      isMobile,
+      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 'undefined',
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'undefined',
+      isMobileMenuOpen
+    });
+  }, [isMobile, isMobileMenuOpen]);
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -128,7 +138,7 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Navigation Links and Buttons */}
         {!isMobile && (
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-8 desktop-nav">
           <div>
             <ChangeLang />
           </div>
@@ -424,7 +434,7 @@ const Navbar: React.FC = () => {
         {isMobile && (
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 sm:p-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200 flex-shrink-0 z-50"
+            className="p-2 sm:p-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200 flex-shrink-0 z-50 mobile-hamburger"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? (
@@ -438,7 +448,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobile && isMobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50 mobile-menu">
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
