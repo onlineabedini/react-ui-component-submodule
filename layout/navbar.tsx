@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-2 sm:p-4 md:p-6 mx-auto border border-gray-100/50 mb-4 sm:mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20 mobile-menu-container">
+    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-2 sm:p-4 md:p-6 mx-auto border border-gray-100/50 mb-4 sm:mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20 mobile-menu-container relative">
       <nav className="flex justify-between items-center mx-auto relative">
         {/* Logo with hover effect */}
         <a href="/" className="group flex items-center transform hover:scale-[1.02] transition-all duration-300 flex-shrink-0">
@@ -431,7 +431,11 @@ const Navbar: React.FC = () => {
         {/* Mobile Hamburger Menu Button */}
         <div className="md:hidden mobile-hamburger">
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => {
+              console.log('🍔 Hamburger clicked! Current state:', isMobileMenuOpen);
+              setIsMobileMenuOpen(!isMobileMenuOpen);
+              console.log('🍔 New state will be:', !isMobileMenuOpen);
+            }}
             className="p-2 sm:p-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200 flex-shrink-0 z-50 mobile-hamburger"
             aria-label="Toggle mobile menu"
           >
@@ -445,8 +449,9 @@ const Navbar: React.FC = () => {
       </nav>
 
       {/* Mobile Menu */}
-      <div className={`md:hidden mobile-menu ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
+      {isMobileMenuOpen && (
+        <div className="md:hidden mobile-menu absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
+          {console.log('📱 Mobile menu rendering, isMobileMenuOpen:', isMobileMenuOpen)}
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
@@ -724,7 +729,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* General Request Modal */}
       <BookingSheet
