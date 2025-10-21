@@ -137,8 +137,7 @@ const Navbar: React.FC = () => {
         </a>
 
         {/* Desktop Navigation Links and Buttons */}
-        {!isMobile && (
-          <div className="flex items-center space-x-8 desktop-nav">
+        <div className="hidden md:flex items-center space-x-8 desktop-nav">
           <div>
             <ChangeLang />
           </div>
@@ -428,10 +427,9 @@ const Navbar: React.FC = () => {
             )}
           </div>
         </div>
-        )}
 
         {/* Mobile Hamburger Menu Button */}
-        {isMobile && (
+        <div className="md:hidden mobile-hamburger">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 sm:p-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200 flex-shrink-0 z-50 mobile-hamburger"
@@ -443,12 +441,12 @@ const Navbar: React.FC = () => {
               <FiMenu className="w-5 h-5 sm:w-6 sm:h-6" />
             )}
           </button>
-        )}
+        </div>
       </nav>
 
       {/* Mobile Menu */}
-      {isMobile && isMobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50 mobile-menu">
+      <div className={`md:hidden mobile-menu ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
@@ -726,7 +724,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* General Request Modal */}
       <BookingSheet
