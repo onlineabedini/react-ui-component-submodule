@@ -29,6 +29,23 @@ const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && isMobile) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.mobile-menu-container')) {
+          setIsMobileMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen, isMobile]);
+
   // Fetch user data when logged in
   useEffect(() => {
     const fetchUserData = async () => {
@@ -88,11 +105,11 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-4 sm:p-6 mx-auto border border-gray-100/50 mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20">
-      <nav className="flex justify-between items-center mx-auto">
+    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-2 sm:p-4 md:p-6 mx-auto border border-gray-100/50 mb-4 sm:mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20 mobile-menu-container">
+      <nav className="flex justify-between items-center mx-auto relative">
         {/* Logo with hover effect */}
-        <a href="/" className="group flex items-center transform hover:scale-[1.02] transition-all duration-300">
-          <span className="text-2xl sm:text-3xl font-extrabold transition-all duration-300">
+        <a href="/" className="group flex items-center transform hover:scale-[1.02] transition-all duration-300 flex-shrink-0">
+          <span className="text-xl sm:text-2xl md:text-3xl font-extrabold transition-all duration-300">
             <span className="text-teal-600 group-hover:text-teal-700 break-words">
               <span
                 data-editable
@@ -407,13 +424,13 @@ const Navbar: React.FC = () => {
         {isMobile && (
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200"
+            className="p-2 sm:p-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white transition-colors duration-200 flex-shrink-0 z-50"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? (
-              <FiX className="w-6 h-6" />
+              <FiX className="w-5 h-5 sm:w-6 sm:h-6" />
             ) : (
-              <FiMenu className="w-6 h-6" />
+              <FiMenu className="w-5 h-5 sm:w-6 sm:h-6" />
             )}
           </button>
         )}
@@ -421,7 +438,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobile && isMobileMenuOpen && (
-        <div className="mt-4 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
