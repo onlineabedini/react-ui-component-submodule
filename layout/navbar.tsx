@@ -39,6 +39,11 @@ const Navbar: React.FC = () => {
     });
   }, [isMobile, isMobileMenuOpen]);
 
+  // Debug mobile menu state changes
+  useEffect(() => {
+    console.log('📱 Mobile menu state changed:', isMobileMenuOpen);
+  }, [isMobileMenuOpen]);
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -451,7 +456,6 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden mobile-menu absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
-          {console.log('📱 Mobile menu rendering, isMobileMenuOpen:', isMobileMenuOpen)}
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
