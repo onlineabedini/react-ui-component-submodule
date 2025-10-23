@@ -268,7 +268,8 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
                     </button>
                 </div>
                 {/* Providers Carousel */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-7">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-7"
+                     style={{ gridGap: '1.75rem' }}>
                     {getVisibleProviders().map((provider, idx) => (
                         <ProviderCard
                             key={provider.id}

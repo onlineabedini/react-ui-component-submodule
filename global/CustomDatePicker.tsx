@@ -1,4 +1,4 @@
-import { formatDateEuropean } from "@/lib/utils";
+import { formatDateEuropean, parseDateSafe } from "@/lib/utils";
 import { addDays, subDays, startOfMonth, endOfMonth, eachDayOfInterval, format, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths, isBefore, startOfDay } from "date-fns";
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
@@ -82,13 +82,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
       try {
         // Parse dates from the value array (format: 'DD/MM/YYYY')
         const parseEuropeanDate = (dateStr: string): Date | null => {
-          if (!dateStr) return null;
-          const parts = dateStr.split('/');
-          if (parts.length === 3) {
-            const [day, month, year] = parts;
-            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-          }
-          return null;
+          return parseDateSafe(dateStr);
         };
 
         const startDate = parseEuropeanDate(value[0]);
@@ -223,6 +217,9 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,
+            // Ensure proper stacking context
+            transform: 'translateZ(0)',
+            willChange: 'transform',
           }}
         >
           <div className="flex gap-8">

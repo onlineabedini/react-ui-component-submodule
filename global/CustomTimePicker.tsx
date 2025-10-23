@@ -93,7 +93,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
       {/* Input Display */}
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
-        className={`flex items-center justify-between w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
+        className={`flex items-center justify-between w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:border-teal-500 [-webkit-appearance:none] [appearance:none] ${
           disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''
         }`}
       >
