@@ -119,7 +119,7 @@ export const Combobox: React.FC<ComboboxProps> = ({ label, children, disabled = 
       </button>
 
       {open && !disabled && (
-        <div className="absolute mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-auto max-h-64 ring-1 ring-black ring-opacity-5">
+        <div className="absolute mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-auto max-h-64 ring-1 ring-black ring-opacity-5">
           {/* Search box for filtering */}
           <div className="p-2 border-b border-gray-100">
             <input

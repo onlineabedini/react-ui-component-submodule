@@ -56,7 +56,7 @@ const normalizeAvailability = (data: any): Availability => {
 // Helper Components
 const AnimatedCheck: React.FC = () => (
   <svg
-    className="w-4 h-4 animate-pulse"
+    className="w-3 h-3 md:w-4 md:h-4 animate-pulse"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
@@ -76,7 +76,7 @@ const TimeSlotButton: React.FC<{
     type="button"
     onClick={onClick}
     className={`
-      w-8 h-8 flex items-center justify-center rounded-xl border transition-all duration-200
+      w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-lg md:rounded-xl border transition-all duration-200
       ${isSelected
         ? "bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 border-teal-600 text-white shadow-lg animate-glow"
         : "bg-gradient-to-br from-gray-100 to-gray-200 border-gray-200 text-gray-400"}
@@ -118,26 +118,27 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
 
   // Main card container - increased max width for profile card
   return (
-    <div className="w-full max-w-lg rounded-3xl shadow-2xl border border-white/70 p-6 flex flex-col items-center justify-center mx-auto bg-gradient-to-br from-teal-50 via-teal-100 to-white relative overflow-hidden">
+    <div className="w-full max-w-lg rounded-2xl md:rounded-3xl shadow-2xl border border-white/70 p-3 md:p-6 flex flex-col items-center justify-center mx-auto bg-gradient-to-br from-teal-50 via-teal-100 to-white relative overflow-hidden">
       {/* Decorative blurred background circles */}
       <div className="absolute -top-16 -left-16 w-40 h-40 bg-teal-200/30 rounded-full blur-2xl z-0" />
       <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-teal-300/20 rounded-full blur-2xl z-0" />
       {/* Title */}
-      <h3 className="text-xl font-extrabold text-teal-700 mb-4 text-center z-10 drop-shadow-sm tracking-tight">
+      <h3 className="text-base md:text-xl font-extrabold text-teal-700 mb-3 md:mb-4 text-center z-10 drop-shadow-sm tracking-tight">
         <span data-editable data-key="availability">
           {t('availability', 'Availability')}
         </span>
       </h3>
       {/* Calendar Table */}
-      <div className="overflow-x-auto w-full z-10">
+      <div className="overflow-x-auto w-full z-10 -mx-2 md:mx-0">
         <table className="min-w-full border-collapse text-center">
           <thead>
             <tr>
-              <th className="p-2"></th>
+              <th className="p-1 md:p-2"></th>
               {CALENDAR_CONFIG.DAYS.map((day) => (
-                <th key={day} className="text-teal-700 text-xs font-bold pb-2 px-2 tracking-wide">
+                <th key={day} className="text-teal-700 text-[10px] md:text-xs font-bold pb-1 md:pb-2 px-0.5 md:px-2 tracking-wide">
                   <span data-editable data-key={`calendar.days.${day.toLowerCase()}`}>
-                    {t(`calendar.days.${day.toLowerCase()}`, day)}
+                    <span className="hidden sm:inline">{t(`calendar.days.${day.toLowerCase()}`, day)}</span>
+                    <span className="sm:hidden">{day[0]}</span>
                   </span>
                 </th>
               ))}
@@ -146,13 +147,14 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
           <tbody>
             {CALENDAR_CONFIG.TIMES.map((time) => (
               <tr key={time} className="border-t border-teal-100">
-                <td className="font-semibold text-teal-700 text-xs py-2 pr-2">
+                <td className="font-semibold text-teal-700 text-[10px] md:text-xs py-1 md:py-2 pr-1 md:pr-2 whitespace-nowrap">
                   <span data-editable data-key={`calendar.times.${time.toLowerCase()}`}>
-                    {t(`calendar.times.${time.toLowerCase()}`, time)}
+                    <span className="hidden sm:inline">{t(`calendar.times.${time.toLowerCase()}`, time)}</span>
+                    <span className="sm:hidden">{time[0]}</span>
                   </span>
                 </td>
                 {CALENDAR_CONFIG.DAYS.map((day) => (
-                  <td key={day} className="p-1 text-center">
+                  <td key={day} className="p-0.5 md:p-1 text-center">
                     <TimeSlotButton
                       isSelected={normalizedValue[time][day]}
                       onClick={() => toggleSlot(time, day)}
@@ -167,16 +169,16 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
         </table>
       </div>
       {/* Legend with icons and better spacing */}
-      <div className="mt-6 flex items-center justify-center gap-8 text-teal-700 z-10">
-        <div className="flex items-center gap-2">
-          <span className="inline-block w-4 h-4 rounded-full bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 shadow-md border-2 border-white" />
-          <span className="text-xs font-semibold">
+      <div className="mt-4 md:mt-6 flex items-center justify-center gap-4 md:gap-8 text-teal-700 z-10 flex-wrap">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="inline-block w-3 h-3 md:w-4 md:h-4 rounded-full bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 shadow-md border-2 border-white" />
+          <span className="text-[10px] md:text-xs font-semibold">
             <span data-editable data-key="available">{t('available', 'Available')}</span>
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-block w-4 h-4 rounded-full bg-gray-200 shadow-inner border-2 border-white" />
-          <span className="text-xs font-semibold">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="inline-block w-3 h-3 md:w-4 md:h-4 rounded-full bg-gray-200 shadow-inner border-2 border-white" />
+          <span className="text-[10px] md:text-xs font-semibold">
             <span data-editable data-key="unavailable">{t('unavailable', 'Unavailable')}</span>
           </span>
         </div>

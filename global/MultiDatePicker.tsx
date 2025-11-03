@@ -216,28 +216,28 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
     <div className={`relative ${className}`}>
       {/* Selected dates display */}
       <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
           {t('selectedDates') || 'Selected Dates'} ({selectedDates.length}/{maxDates})
         </label>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 md:gap-2">
           {selectedDates.map((date, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium"
+              className="flex items-center gap-1.5 md:gap-2 bg-teal-100 text-teal-800 px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium"
             >
-              <Calendar className="w-4 h-4" />
-              <span>{formatDateYYYYMMDD(date)}</span>
+              <Calendar className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+              <span className="whitespace-nowrap">{formatDateYYYYMMDD(date)}</span>
               <button
                 type="button"
                 onClick={() => removeSelectedDate(format(date, 'yyyy-MM-dd'))}
-                className="hover:bg-teal-200 rounded-full p-0.5 transition-colors"
+                className="hover:bg-teal-200 rounded-full p-0.5 transition-colors flex-shrink-0"
               >
                 <X className="w-3 h-3" />
               </button>
             </div>
           ))}
           {selectedDates.length === 0 && (
-            <div className="text-gray-500 text-sm italic">
+            <div className="text-gray-500 text-xs md:text-sm italic">
               {t('noDatesSelected') || 'No dates selected'}
             </div>
           )}
@@ -249,10 +249,10 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         disabled={selectedDates.length >= maxDates}
-        className="flex items-center justify-between w-full px-5 py-3 text-gray-800 bg-white border border-gray-300 rounded-xl cursor-pointer shadow-sm hover:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center justify-between w-full px-3 md:px-5 py-2.5 md:py-3 text-gray-800 bg-white border border-gray-300 rounded-xl cursor-pointer shadow-sm hover:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <Calendar className="mr-3 h-6 w-6 text-teal-600" />
-        <span className="text-lg font-semibold flex-grow text-left">
+        <Calendar className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6 text-teal-600 flex-shrink-0" />
+        <span className="text-sm md:text-lg font-semibold flex-grow text-left truncate">
           {selectedDates.length > 0 
             ? `${selectedDates.length} ${selectedDates.length === 1 ? 'date' : 'dates'} selected`
             : t('selectDates') || 'Select dates'
@@ -276,10 +276,10 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-3 bg-white rounded-xl shadow-2xl p-5 z-50 border border-gray-200 transform transition-all duration-300 ease-in-out origin-top animate-fade-in-down">
+        <div className="absolute top-full left-0 mt-3 bg-white rounded-xl shadow-2xl p-3 md:p-5 z-50 border border-gray-200 transform transition-all duration-300 ease-in-out origin-top animate-fade-in-down w-[calc(100vw-32px)] max-w-md md:w-auto md:max-w-none">
           {/* Month and Year Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
+            <h3 className="text-base md:text-lg font-bold text-gray-800">
               {format(currentMonth, 'MMMM yyyy')}
             </h3>
             <div className="flex gap-2">
@@ -301,16 +301,17 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
           </div>
 
           {/* Week day headers */}
-          <div className="grid grid-cols-7 gap-2 mb-2">
+          <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="text-center text-sm font-semibold text-gray-700 py-1">
-                {day}
+              <div key={day} className="text-center text-xs md:text-sm font-semibold text-gray-700 py-1">
+                <span className="hidden sm:inline">{day}</span>
+                <span className="sm:hidden">{day[0]}</span>
               </div>
             ))}
           </div>
           
           {/* Calendar days */}
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1 md:gap-2">
             {generateCalendarDays().map((date, index) => {
               if (!date) return <div key={index} className="aspect-square" />;
               
@@ -328,7 +329,7 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
                   onMouseEnter={() => setHoveredDate(date)}
                   onMouseLeave={() => setHoveredDate(null)}
                   className={`
-                    w-14 h-14 flex items-center justify-center text-lg font-semibold relative transition-all duration-200 rounded-full border border-gray-300
+                    w-10 h-10 md:w-14 md:h-14 flex items-center justify-center text-sm md:text-lg font-semibold relative transition-all duration-200 rounded-full border border-gray-300
                     ${isUnavailable ? 'bg-red-50 text-red-400 cursor-not-allowed opacity-70' : ''}
                     ${isSelected ? 'bg-teal-500 text-white shadow-md transform scale-105' : ''}
                     ${!isAvailable && !isUnavailable ? 'text-gray-400 cursor-not-allowed opacity-50' : ''}
@@ -359,8 +360,8 @@ const MultiDatePicker: React.FC<MultiDatePickerProps> = ({
           {/* Max dates warning */}
           {selectedDates.length >= maxDates && (
             <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
-              <div className="flex items-center gap-2 text-yellow-800 text-sm">
-                <AlertCircle className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-yellow-800 text-xs md:text-sm">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{t('maxDatesReached') || `Maximum ${maxDates} dates selected`}</span>
               </div>
             </div>

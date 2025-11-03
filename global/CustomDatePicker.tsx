@@ -47,18 +47,21 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
       const updatePosition = () => {
         if (inputRef.current) {
           const rect = inputRef.current.getBoundingClientRect();
-          const dropdownWidth = 750; // min-w-[750px]
+          const isMobile = window.innerWidth < 768;
+          const dropdownWidth = isMobile ? window.innerWidth - 32 : 750;
           const viewportWidth = window.innerWidth;
           
           // Calculate left position to keep dropdown on screen
           let left = rect.left;
-          if (left + dropdownWidth > viewportWidth) {
+          if (isMobile) {
+            left = 16; // Center on mobile with 16px margin
+          } else if (left + dropdownWidth > viewportWidth) {
             left = viewportWidth - dropdownWidth - 20; // 20px margin from edge
           }
           
           setDropdownPosition({
             top: rect.bottom + 8, // 8px gap
-            left: Math.max(20, left), // At least 20px from left edge
+            left: isMobile ? 16 : Math.max(20, left), // At least 20px from left edge on desktop
           });
         }
       };
@@ -213,7 +216,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
 
       {isOpen && (
         <div 
-          className="fixed z-[9999] bg-white border border-gray-200 rounded-xl shadow-2xl p-6 min-w-[750px]"
+          className="fixed z-[9999] bg-white border border-gray-200 rounded-xl shadow-2xl p-3 md:p-6 w-[calc(100vw-32px)] md:w-auto md:min-w-[750px] max-h-[90vh] overflow-y-auto"
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,
@@ -222,11 +225,11 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
             willChange: 'transform',
           }}
         >
-          <div className="flex gap-8">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8">
             {/* Left Sidebar - Predefined Ranges */}
-            <div className="w-36">
+            <div className="w-full md:w-36 order-2 md:order-1">
               <h3 className="text-gray-900 text-sm font-semibold mb-4 text-center pb-2 border-b border-gray-100">Quick Select</h3>
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 md:grid-cols-1 gap-2 md:gap-3 md:space-y-0">
                 {predefinedRanges.map((range, index) => (
                   <button
                     key={index}
@@ -247,9 +250,9 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
             </div>
 
             {/* Right Side - Dual Calendar */}
-            <div className="flex gap-6">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 order-1 md:order-2">
               {/* Left Calendar */}
-              <div className="w-68">
+              <div className="w-full md:w-68">
                 <div className="flex items-center justify-between mb-4 px-2">
                   <button
                     onClick={prevMonth}
@@ -257,26 +260,27 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="text-gray-900 font-semibold text-base">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base">
                     {format(currentMonth, 'MMM yyyy').toUpperCase()}
                   </span>
                   <button
                     onClick={nextMonth}
                     className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-7 gap-2 mb-3 px-2">
+                <div className="grid grid-cols-7 gap-1 md:gap-2 mb-3 px-1 md:px-2">
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
                     <div key={day} className="text-gray-600 text-xs font-medium text-center py-2">
-                      {day}
+                      <span className="hidden sm:inline">{day}</span>
+                      <span className="sm:hidden">{day[0]}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="grid grid-cols-7 gap-2 px-2">
+                <div className="grid grid-cols-7 gap-1 md:gap-2 px-1 md:px-2">
                   {getCalendarDays(currentMonth).map((date, index) => {
                     const isCurrentMonth = isSameMonth(date, currentMonth);
                     const isRangeStart = isStartDate(date);
@@ -292,7 +296,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                         onMouseLeave={() => setHoverDate(null)}
                         disabled={isPast}
                         className={`
-                          w-10 h-10 text-sm rounded-lg transition-all duration-200 font-medium
+                          w-8 h-8 md:w-10 md:h-10 text-xs md:text-sm rounded-lg transition-all duration-200 font-medium
                           ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-900'}
                           ${isPast ? 'text-gray-400 bg-gray-100 cursor-not-allowed' : ''}
                           ${isRangeStart ? 'bg-teal-500 text-white rounded-r-none shadow-md' : ''}
@@ -311,7 +315,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
               </div>
 
               {/* Right Calendar */}
-              <div className="w-68">
+              <div className="w-full md:w-68 hidden md:block">
                 <div className="flex items-center justify-between mb-4 px-2">
                   <button
                     onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
@@ -326,7 +330,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
                     onClick={() => setCurrentMonth(addMonths(currentMonth, 2))}
                     className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -375,8 +379,8 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
           </div>
 
           {/* Info Footer */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-500 text-center">
+          <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200">
+            <p className="text-xs md:text-sm text-gray-500 text-center">
               {dateRange.startDate && !dateRange.endDate 
                 ? "Select end date to complete your range" 
                 : "Select start and end dates for your booking"}
