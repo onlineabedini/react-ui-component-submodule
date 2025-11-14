@@ -7,6 +7,7 @@ interface DatePickerProps {
   value: any;
   onChange: (date: any) => void;
   placeholder: string;
+  'data-testid'?: string;
 }
 
 interface DateRange {
@@ -18,6 +19,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
   value,
   onChange,
   placeholder,
+  'data-testid': dataTestId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -204,6 +206,7 @@ const CustomDatePicker: React.FC<DatePickerProps> = ({
       <div className="relative">
         <input
           ref={inputRef}
+          data-testid={dataTestId}
           type="text"
           value={displayValue()}
         placeholder={placeholder}

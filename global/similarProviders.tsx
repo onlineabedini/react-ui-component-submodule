@@ -16,6 +16,7 @@ import { marketPlaceRequiredFields } from '@/utils/requiredFieldsCheck';
 import { getCookie } from '@/utils/authCookieService';
 import { getDefaultProviderImage } from '@/utils/imageUtils';
 import { isSuperAdmin } from '@/config/constants';
+import AuthPromptDialog from "@/components/global/AuthPromptDialog";
 
 interface Provider {
     id: string;
@@ -141,6 +142,8 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const router = useRouter();
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+    const [authPromptMessage, setAuthPromptMessage] = useState<string | undefined>(undefined);
 
     // Get client data for bookmark functionality
     const getClientData = useCallback(async () => {
@@ -220,9 +223,17 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
 
     // Memoized handler for card click
     const handleCardClick = useCallback((provider: Provider) => {
+        // Check client authentication before navigating
+        const clientId = getCookie('clientId');
+        const token = getCookie('token');
+        if (!clientId || !token) {
+            setAuthPromptMessage(t('loginRequiredForViewingProvider') || 'To view provider profile, you need to be logged in as a client. Please login or register to continue.');
+            setShowAuthPrompt(true);
+            return;
+        }
         window.scrollTo({ top: 0, behavior: "smooth" });
         router.push(`/provider/${provider.id}`);
-    }, [router]);
+    }, [router, t]);
 
     // Always show 4 providers per row
     const getVisibleProviders = () => {
@@ -315,6 +326,12 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
                     animation: badge-glow-purple 2s infinite;
                 }
             `}</style>
+            <AuthPromptDialog
+                open={showAuthPrompt}
+                onOpenChange={setShowAuthPrompt}
+                message={authPromptMessage}
+                messageKey="loginRequiredForViewingProvider"
+            />
         </div>
     );
 });

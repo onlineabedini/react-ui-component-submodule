@@ -20,7 +20,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, max = 5, className = ''
 
   // Render stars
   return (
-    <span className={`flex items-center gap-0.5 ${className}`} aria-label={`Rating: ${rating} out of ${max}`}> 
+    <span className={`flex items-center gap-0.5 ${className}`} aria-label={`Rating: ${rating} out of ${max}`} data-testid="star-rating"> 
       {/* Full stars */}
       {[...Array(fullStars)].map((_, i) => (
         <Star key={`full-${i}`} className={`w-6 h-6 fill-yellow-400 text-yellow-400 ${starClassName}`} />

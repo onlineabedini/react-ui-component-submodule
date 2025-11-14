@@ -133,10 +133,11 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
     <button
       onClick={handleBookmarkToggle}
       aria-label={isBookmarked ? 'Remove from favorites' : 'Add to favorites'}
+      data-testid="favorite-button"
       className={
         variant === 'overlay'
-          ? `bg-white/80 rounded-full p-2 shadow-md hover:bg-pink-100 transition-colors duration-200 ${isBookmarked ? 'text-pink-500' : 'text-gray-400'} ${isBookmarked ? 'favorite-active' : ''}`
-          : `flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 bg-white hover:bg-pink-50 transition-colors duration-200 ${isBookmarked ? 'text-pink-500' : 'text-gray-400'} ${isBookmarked ? 'favorite-active' : ''}`
+          ? `bg-white/80 rounded-full p-2 shadow-md hover:bg-pink-100 transition-colors duration-200 ${isBookmarked ? 'text-pink-500' : 'text-gray-400'} ${isBookmarked ? 'favorite-active favorited' : ''}`
+          : `flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 bg-white hover:bg-pink-50 transition-colors duration-200 ${isBookmarked ? 'text-pink-500 favorited' : 'text-gray-400'} ${isBookmarked ? 'favorite-active' : ''}`
       }
       title={isBookmarked ? 'Remove from favorites' : 'Add to favorites'}
       // Tooltip for clarity

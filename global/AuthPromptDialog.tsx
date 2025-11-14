@@ -15,12 +15,16 @@ import { useTranslation } from "react-i18next";
 interface AuthPromptDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  message?: string;
+  messageKey?: string;
 }
 
 // --- Main AuthPromptDialog component ---
 const AuthPromptDialog: React.FC<AuthPromptDialogProps> = ({
   open,
   onOpenChange,
+  message,
+  messageKey = 'loginRequiredForBooking',
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -53,10 +57,10 @@ const AuthPromptDialog: React.FC<AuthPromptDialogProps> = ({
           <DialogDescription className="text-gray-600 mt-2">
             <span 
               data-editable 
-              data-key="loginRequiredForBooking" 
+              data-key={messageKey} 
               className="cursor-pointer px-2 py-1 rounded transition-colors"
             >
-              {t('loginRequiredForBooking') || 'To book a service, you need to be logged in as a client. Please login or register to continue.'}
+              {message || t(messageKey) || 'To continue, you need to be logged in as a client. Please login or register to continue.'}
             </span>
           </DialogDescription>
         </DialogHeader>

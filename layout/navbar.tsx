@@ -8,9 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/hooks/useAuth';
 import BookingSheet from '@/app/marketPlace/components/BookingSheet';
+import ClientValidationDialog from '@/components/global/ClientValidationDialog';
 import { toast } from 'sonner';
 import { clientService } from '@/services/client.service';
 import { providerService } from '@/services/provider.service';
+import { validateClientForBooking } from '@/utils/clientValidation';
 import { API_BASE_URL } from '@/config/api';
 import { getProfileImage, getDefaultClientImage, getDefaultProviderImage } from '@/utils/imageUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -23,6 +25,11 @@ const Navbar: React.FC = () => {
   const { isLoggedIn, isProvider, isClient, isSuperAdminUser, handleLogout } = useAuth();
   // State for general request modal
   const [isGeneralRequestOpen, setIsGeneralRequestOpen] = useState(false);
+  const [showClientValidation, setShowClientValidation] = useState(false);
+  const [validationState, setValidationState] = useState<{ missingAddress: boolean; missingConsent: boolean }>({
+    missingAddress: false,
+    missingConsent: false,
+  });
   // State for user data
   const [userData, setUserData] = useState<any>(null);
   // Mobile state management
@@ -60,6 +67,27 @@ const Navbar: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMobileMenuOpen, isMobile]);
+
+  // Handler for opening general request with validation
+  const handleOpenGeneralRequest = async () => {
+    if (!isClient) {
+      router.push('/login/client');
+      return;
+    }
+    
+    // Validate client address and consent before opening booking sheet
+    const validation = await validateClientForBooking();
+    if (!validation.isValid) {
+      setValidationState({
+        missingAddress: validation.missingAddress,
+        missingConsent: validation.missingConsent,
+      });
+      setShowClientValidation(true);
+      return;
+    }
+    
+    setIsGeneralRequestOpen(true);
+  };
 
   // Fetch user data when logged in
   useEffect(() => {
@@ -266,7 +294,7 @@ const Navbar: React.FC = () => {
 
                         {/* Create General Request - Quick action */}
                         <button
-                          onClick={() => setIsGeneralRequestOpen(true)}
+                          onClick={handleOpenGeneralRequest}
                           className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
                           <FiMessageSquare className="w-4 h-4 flex-shrink-0" />
@@ -556,9 +584,9 @@ const Navbar: React.FC = () => {
 
                     {/* Create General Request - Quick action */}
                     <button
-                      onClick={() => {
-                        setIsGeneralRequestOpen(true);
+                      onClick={async () => {
                         setIsMobileMenuOpen(false);
+                        await handleOpenGeneralRequest();
                       }}
                       className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 text-left"
                     >
@@ -744,6 +772,13 @@ const Navbar: React.FC = () => {
           setIsGeneralRequestOpen(false);
           toast.success(t('requestSuccess', 'General request sent successfully!'));
         }}
+      />
+
+      <ClientValidationDialog
+        open={showClientValidation}
+        onOpenChange={setShowClientValidation}
+        missingAddress={validationState.missingAddress}
+        missingConsent={validationState.missingConsent}
       />
     </div>
   );
