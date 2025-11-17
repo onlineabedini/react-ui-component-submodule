@@ -15,6 +15,7 @@ interface CustomTimePickerProps {
   isGeneralRequest?: boolean;
   disabled?: boolean;
   disabledTimes?: string[];
+  'data-testid'?: string;
 }
 
 const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
