@@ -1,13 +1,13 @@
 "use client";
 // SimilarProviders: Carousel of similar providers with navigation
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from '@/config/api';
 import { providerService } from '@/services/provider.service';
 import DOMPurify from 'dompurify';
-import ProgressiveImage from '@/components/global/ProgressiveImage';
+import ProgressiveImage from '@/components/common/ProgressiveImage';
 import { Pencil } from "lucide-react";
 import StarRating from './StarRating';
 import BookmarkButton from './BookmarkButton';
@@ -16,7 +16,7 @@ import { marketPlaceRequiredFields } from '@/utils/requiredFieldsCheck';
 import { getCookie } from '@/utils/authCookieService';
 import { getDefaultProviderImage } from '@/utils/imageUtils';
 import { isSuperAdmin } from '@/config/constants';
-import AuthPromptDialog from "@/components/global/AuthPromptDialog";
+import AuthPromptDialog from "@/components/common/AuthPromptDialog";
 
 interface Provider {
     id: string;

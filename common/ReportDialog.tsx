@@ -22,7 +22,7 @@ import { ReportService } from '@/services/report.service';
 import { Report, CreateReportRequest } from '@/types/report';
 import { toast } from 'sonner';
 import { Clock, MessageSquare, ThumbsUp, ThumbsDown, FileText, X, Check, Star, Calendar, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { Combobox } from '@/components/global/combobox';
+import { Combobox } from '@/components/common/combobox';
 import { API_BASE_URL } from '@/config/api';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';

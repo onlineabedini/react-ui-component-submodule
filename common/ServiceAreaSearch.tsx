@@ -2,7 +2,7 @@
 // ServiceAreaSearch: Search and select service areas, then navigate to marketplace
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { StockholmAreas } from "@/lists/stockholmAreas";
+import { StockholmAreas } from "@/constants/stockholmAreas";
 import { MapPin } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 

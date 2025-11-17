@@ -1,14 +1,14 @@
 "use client";
 // Navbar: Main navigation bar with user and language controls
 import React, { useState, useEffect } from "react";
-import ChangeLang from "@/components/global/changeLangDropdown";
+import ChangeLang from "@/components/common/changeLangDropdown";
 import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiTrendingUp, FiMessageSquare, FiDollarSign, FiMenu, FiX } from "react-icons/fi";
 import { getCookie, removeCookie } from '@/utils/authCookieService';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/hooks/useAuth';
 import BookingSheet from '@/app/marketPlace/components/BookingSheet';
-import ClientValidationDialog from '@/components/global/ClientValidationDialog';
+import ClientValidationDialog from '@/components/common/ClientValidationDialog';
 import { toast } from 'sonner';
 import { clientService } from '@/services/client.service';
 import { providerService } from '@/services/provider.service';

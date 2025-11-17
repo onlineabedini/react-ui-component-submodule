@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FiGlobe } from "react-icons/fi";
-import { getFlagIconClass } from "@/lists/countryFlags";
+import { getFlagIconClass } from "@/constants/countryFlags";
 import { useRouter } from "next/navigation";
 
 // Language configuration
