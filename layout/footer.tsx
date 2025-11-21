@@ -246,18 +246,18 @@ const UiFooter: React.FC = () => {
               </h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="/general-requests" className="text-gray-600 hover:text-teal-600 transition-colors duration-300 break-words">
+                  <a href="/jobs" className="text-gray-600 hover:text-teal-600 transition-colors duration-300 break-words">
                     <span
                       data-editable
-                      data-key="footer.support.generalRequests"
+                      data-key="footer.support.jobs"
                       className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
                     >
-                      {t('footer.support.generalRequests')}
+                      {t('footer.support.jobs') || t('jobs.pageTitle')}
                     </span>
                   </a>
                 </li>
                 <li>
-                  <a href="/latest-jobs" className="text-gray-600 hover:text-teal-600 transition-colors duration-300 break-words">
+                  <a href="/jobs" className="text-gray-600 hover:text-teal-600 transition-colors duration-300 break-words">
                     <span
                       data-editable
                       data-key="footer.support.latestJobs"

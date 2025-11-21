@@ -2,7 +2,7 @@
 // Navbar: Main navigation bar with user and language controls
 import React, { useState, useEffect } from "react";
 import ChangeLang from "@/components/common/changeLangDropdown";
-import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiTrendingUp, FiMessageSquare, FiDollarSign, FiMenu, FiX } from "react-icons/fi";
+import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiMessageSquare, FiDollarSign, FiMenu, FiX } from "react-icons/fi";
 import { getCookie, removeCookie } from '@/utils/authCookieService';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/navigation";
@@ -204,7 +204,43 @@ const Navbar: React.FC = () => {
               <div className="relative group">
                 <button className="relative bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-all duration-300
                                  shadow-lg hover:shadow-teal-200 transform hover:-translate-y-0.5 flex items-center gap-2 break-words">
-                  <FiUser className="w-5 h-5 flex-shrink-0" />
+                  {/* Profile Thumbnail */}
+                  {isClient && (
+                    <div className="w-5 h-5 rounded-full overflow-hidden border border-white/30 flex-shrink-0">
+                      {userData && userData.profileImage ? (
+                        <img
+                          src={getProfileImage(userData.profileImage, API_BASE_URL, getDefaultClientImage())}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = getDefaultClientImage();
+                          }}
+                        />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-xs">
+                          {userData ? (userData.firstName?.[0] || userData.username?.[0] || 'C') : 'C'}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {isProvider && (
+                    <div className="w-5 h-5 rounded-full overflow-hidden border border-white/30 flex-shrink-0">
+                      {userData && userData.profileImage ? (
+                        <img
+                          src={getProfileImage(userData.profileImage, API_BASE_URL, getDefaultProviderImage())}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = getDefaultProviderImage();
+                          }}
+                        />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-xs">
+                          {userData ? (userData.firstName?.[0] || userData.username?.[0] || 'P') : 'P'}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <span
                     data-editable
                     data-key="navbar.myAccount"
@@ -307,18 +343,18 @@ const Navbar: React.FC = () => {
                           </span>
                         </button>
 
-                        {/* Latest Jobs */}
+                        {/* Jobs */}
                         <a
-                          href="/latest-jobs"
+                          href="/jobs"
                           className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
+                          <FiBriefcase className="w-4 h-4 flex-shrink-0" />
                           <span
                             data-editable
-                            data-key="navbar.latestJobs"
+                            data-key="navbar.jobs"
                             className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
                           >
-                            {t('navbar.latestJobs')}
+                            {t('navbar.jobs') || t('jobs.pageTitle')}
                           </span>
                         </a>
 
@@ -357,33 +393,18 @@ const Navbar: React.FC = () => {
                     {/* PROVIDER MENU ITEMS */}
                     {isProvider && (
                       <>
-                        {/* Latest Jobs */}
+                        {/* Jobs */}
                         <a
-                          href="/latest-jobs"
-                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
-                        >
-                          <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
-                          <span
-                            data-editable
-                            data-key="navbar.latestJobs"
-                            className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
-                          >
-                            {t('navbar.latestJobs')}
-                          </span>
-                        </a>
-
-                        {/* General Jobs */}
-                        <a
-                          href="/general-requests"
+                          href="/jobs"
                           className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
                           <FiBriefcase className="w-4 h-4 flex-shrink-0" />
                           <span
                             data-editable
-                            data-key="navbar.generalJobs"
+                            data-key="navbar.jobs"
                             className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
                           >
-                            {t('navbar.generalJobs')}
+                            {t('navbar.jobs') || t('jobs.pageTitle')}
                           </span>
                         </a>
 
@@ -600,19 +621,19 @@ const Navbar: React.FC = () => {
                       </span>
                     </button>
 
-                    {/* Latest Jobs */}
+                    {/* Jobs */}
                     <a
-                      href="/latest-jobs"
+                      href="/jobs"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200"
                     >
-                      <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
+                      <FiBriefcase className="w-4 h-4 flex-shrink-0" />
                       <span
                         data-editable
-                        data-key="navbar.latestJobs"
+                        data-key="navbar.jobs"
                         className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
                       >
-                        {t('navbar.latestJobs')}
+                        {t('navbar.jobs') || t('jobs.pageTitle')}
                       </span>
                     </a>
 
@@ -653,35 +674,19 @@ const Navbar: React.FC = () => {
                 {/* PROVIDER MENU ITEMS */}
                 {isProvider && (
                   <>
-                    {/* Latest Jobs */}
+                    {/* Jobs */}
                     <a
-                      href="/latest-jobs"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200"
-                    >
-                      <FiTrendingUp className="w-4 h-4 flex-shrink-0" />
-                      <span
-                        data-editable
-                        data-key="navbar.latestJobs"
-                        className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
-                      >
-                        {t('navbar.latestJobs')}
-                      </span>
-                    </a>
-
-                    {/* General Jobs */}
-                    <a
-                      href="/general-requests"
+                      href="/jobs"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200"
                     >
                       <FiBriefcase className="w-4 h-4 flex-shrink-0" />
                       <span
                         data-editable
-                        data-key="navbar.generalJobs"
+                        data-key="navbar.jobs"
                         className="break-words cursor-pointer px-2 py-1 rounded transition-colors"
                       >
-                        {t('navbar.generalJobs')}
+                        {t('navbar.jobs') || t('jobs.pageTitle')}
                       </span>
                     </a>
 
