@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { API_BASE_URL } from '@/config/api';
 import ServiceTypeDisplay from '@/components/common/ServiceTypeDisplay';
 import { formatDateYYYYMMDD, formatDateEuropean } from '@/lib/utils';
+import { useAppNavigation } from '@/utils/routing-migration';
 
 type Job = {
   id: string;
@@ -43,7 +44,7 @@ type LatestJobsConciseTableProps = {
   clientProfiles: Record<string, any>;
   providerProfiles: Record<string, any>;
   volunteersByBooking: Record<string, string[]>;
-  getCombinedStatus: (job: Job) => string;
+  getCombinedStatus: (job: Job, volunteersByBookingParam?: Record<string, string[]>) => string;
   getStatusColor: (status: string) => string;
   onOpenJobDetails: (job: Job, role: 'client' | 'provider') => void;
 };
@@ -133,6 +134,7 @@ const LatestJobsConciseTable: React.FC<LatestJobsConciseTableProps> = ({
   onOpenJobDetails,
 }) => {
   const { t } = useTranslation();
+  const { navigate } = useAppNavigation();
 
   if (jobsList.length === 0) {
     return (
@@ -148,7 +150,8 @@ const LatestJobsConciseTable: React.FC<LatestJobsConciseTableProps> = ({
             <tr>
               <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.service">{t('latestJobs.service')}</span></th>
               <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.date">{t('latestJobs.date')}</span></th>
-              <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.participants">{t('latestJobs.participants')}</span></th>
+              <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.labels.client">{t('latestJobs.labels.client')}</span></th>
+              <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.labels.provider">{t('latestJobs.labels.provider')}</span></th>
               <th className="text-left px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.status">{t('latestJobs.status')}</span></th>
               <th className="text-right px-4 py-3 font-semibold"><span data-editable data-key="latestJobs.actions">{t('latestJobs.actions')}</span></th>
             </tr>
@@ -180,61 +183,64 @@ const LatestJobsConciseTable: React.FC<LatestJobsConciseTableProps> = ({
                     </div>
                   </td>
                   <td className="px-4 py-3 align-middle">
-                    <div className="flex items-center gap-3">
-                      {/* Client */}
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={client?.profileImage ? `${API_BASE_URL}/${client.profileImage}` : "/assets/img/client.jpg"}
-                          alt="client"
-                          className="w-7 h-7 rounded-full object-cover border"
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
-                            {(client?.firstName || '') + ' ' + (client?.lastName || '')}
-                          </span>
-                          <span className="text-[10px] text-gray-500"><span data-editable data-key="latestJobs.labels.client">{t('latestJobs.labels.client')}</span></span>
-                        </div>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={client?.profileImage ? `${API_BASE_URL}/${client.profileImage}` : "/assets/img/client.jpg"}
+                        alt="client"
+                        className="w-7 h-7 rounded-full object-cover border"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
+                          {(client?.firstName || '') + ' ' + (client?.lastName || '')}
+                        </span>
+                        <span className="text-[10px] text-gray-500"><span data-editable data-key="latestJobs.labels.client">{t('latestJobs.labels.client')}</span></span>
                       </div>
-                      
-                      {/* Provider (if assigned) */}
-                      {provider ? (
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
-                            alt="provider"
-                            className="w-7 h-7 rounded-full object-cover border"
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
-                              {(provider.firstName || '') + ' ' + (provider.lastName || '')}
-                            </span>
-                            <span className="text-[10px] text-gray-500"><span data-editable data-key="latestJobs.labels.provider">{t('latestJobs.labels.provider')}</span></span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-gray-200 border flex items-center justify-center">
-                            <span className="text-xs text-gray-500">?</span>
-                          </div>
-                          <div className="flex flex-col">
-                            {(volunteersByBooking[job.id] || job.volunteerProviders || []).length > 0 ? (
-                              <span className="text-xs text-teal-600 font-medium">
-                                {(volunteersByBooking[job.id] || job.volunteerProviders || []).length} <span data-editable data-key="latestJobs.volunteers">{t('latestJobs.volunteers')}</span>
-                              </span>
-                            ) : (
-                              <span className="text-xs text-gray-500">
-                                <span data-editable data-key="latestJobs.noProvider">{t('latestJobs.noProvider')}</span>
-                              </span>
-                            )}
-                            <span className="text-[10px] text-gray-400"><span data-editable data-key="latestJobs.statuses.pending">{t('latestJobs.statuses.pending')}</span></span>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3 align-middle">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(getCombinedStatus(job))}`}>
-                      {getCombinedStatus(job)}
+                    {provider ? (
+                      <div 
+                        className="flex items-center gap-2 cursor-pointer hover:bg-teal-50 rounded-lg p-1 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/provider/${job.providerId}`);
+                        }}
+                      >
+                        <img
+                          src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
+                          alt="provider"
+                          className="w-7 h-7 rounded-full object-cover border"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate hover:text-teal-600 transition-colors">
+                            {(provider.firstName || '') + ' ' + (provider.lastName || '')}
+                          </span>
+                          <span className="text-[10px] text-gray-500"><span data-editable data-key="latestJobs.labels.provider">{t('latestJobs.labels.provider')}</span></span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-gray-200 border flex items-center justify-center">
+                          <span className="text-xs text-gray-500">?</span>
+                        </div>
+                        <div className="flex flex-col">
+                          {(volunteersByBooking[job.id] || job.volunteerProviders || []).length > 0 ? (
+                            <span className="text-xs text-teal-600 font-medium">
+                              {(volunteersByBooking[job.id] || job.volunteerProviders || []).length} <span data-editable data-key="latestJobs.volunteers">{t('latestJobs.volunteers')}</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-500">
+                              <span data-editable data-key="latestJobs.noProvider">{t('latestJobs.noProvider')}</span>
+                            </span>
+                          )}
+                          <span className="text-[10px] text-gray-400"><span data-editable data-key="latestJobs.statuses.pending">{t('latestJobs.statuses.pending')}</span></span>
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(getCombinedStatus(job, volunteersByBooking))}`}>
+                      {getCombinedStatus(job, volunteersByBooking)}
                     </span>
                   </td>
                   <td className="px-4 py-3 align-middle text-right">

@@ -2,7 +2,8 @@
 // Navbar: Main navigation bar with user and language controls
 import React, { useState, useEffect } from "react";
 import ChangeLang from "@/components/common/changeLangDropdown";
-import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiMessageSquare, FiDollarSign, FiMenu, FiX } from "react-icons/fi";
+import { FiLogOut, FiUser, FiBriefcase, FiInfo, FiHeart, FiHelpCircle, FiMessageSquare, FiMenu, FiX } from "react-icons/fi";
+import { FaCoins } from "react-icons/fa";
 import { getCookie, removeCookie } from '@/utils/authCookieService';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from "next/navigation";
@@ -148,7 +149,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-2 sm:p-4 md:p-6 mx-auto border border-gray-100/50 mb-4 sm:mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20 mobile-menu-container relative">
+    <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-2xl p-2 sm:p-4 md:p-6 mx-auto border border-gray-100/50 mb-4 sm:mb-8 max-w-7xl transition-all duration-300 hover:shadow-teal-100/20 mobile-menu-container relative z-50">
       <nav className="flex justify-between items-center mx-auto relative">
         {/* Logo with hover effect */}
         <a href="/" className="group flex items-center transform hover:scale-[1.02] transition-all duration-300 flex-shrink-0">
@@ -260,7 +261,7 @@ const Navbar: React.FC = () => {
 
                 {/* Dropdown Menu */}
                 <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg opacity-0 invisible
-                              group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-100">
+                              group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60] border border-gray-100">
                   <div className="p-4 space-y-3">
                     {/* User Type Header with Profile Image */}
                     <div className="flex items-center gap-3 px-3 py-2 bg-teal-50 rounded-lg border border-teal-100">
@@ -413,7 +414,7 @@ const Navbar: React.FC = () => {
                           href="/monthly-balance"
                           className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200 break-words"
                         >
-                          <FiDollarSign className="w-4 h-4 flex-shrink-0" />
+                          <FaCoins className="w-4 h-4 flex-shrink-0" />
                           <span
                             data-editable
                             data-key="navbar.balance"
@@ -504,7 +505,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden mobile-menu absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-50">
+        <div className="md:hidden mobile-menu absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-4 space-y-4 z-[60]">
           {/* Language Switcher */}
           <div className="border-b border-gray-200 pb-4">
             <ChangeLang />
@@ -696,7 +697,7 @@ const Navbar: React.FC = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-200"
                     >
-                      <FiDollarSign className="w-4 h-4 flex-shrink-0" />
+                      <FaCoins className="w-4 h-4 flex-shrink-0" />
                       <span
                         data-editable
                         data-key="navbar.balance"

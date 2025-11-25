@@ -6,6 +6,7 @@ import ServiceTypeDisplay from '@/components/common/ServiceTypeDisplay';
 import StarRating from '@/components/common/StarRating';
 import { formatDateYYYYMMDD, formatDateEuropean } from '@/lib/utils';
 import { Report } from '@/types/report';
+import { useAppNavigation } from '@/utils/routing-migration';
 
 type Job = {
   id: string;
@@ -45,7 +46,7 @@ type CompletedJobsConciseTableProps = {
   clientProfiles: Record<string, any>;
   providerProfiles: Record<string, any>;
   reports: Record<string, Report[]>;
-  getCombinedStatus: (job: Job) => string;
+  getCombinedStatus: (job: Job, volunteersByBookingParam?: Record<string, string[]>) => string;
   getStatusColor: (status: string) => string;
   onOpenJobDetails: (job: Job, role: 'client' | 'provider') => void;
 };
@@ -135,6 +136,7 @@ const CompletedJobsConciseTable: React.FC<CompletedJobsConciseTableProps> = ({
   onOpenJobDetails,
 }) => {
   const { t } = useTranslation();
+  const { navigate } = useAppNavigation();
 
   const getBookingReports = (bookingId: string): Report[] => {
     return reports[bookingId] || [];
@@ -164,7 +166,8 @@ const CompletedJobsConciseTable: React.FC<CompletedJobsConciseTableProps> = ({
             <tr>
               <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.service')}</th>
               <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.date')}</th>
-              <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.participants')}</th>
+              <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.labels.client')}</th>
+              <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.labels.provider')}</th>
               <th className="text-left px-4 py-3 font-semibold">{t('jobs.rating')}</th>
               <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.status')}</th>
               <th className="text-right px-4 py-3 font-semibold">{t('latestJobs.actions')}</th>
@@ -199,39 +202,44 @@ const CompletedJobsConciseTable: React.FC<CompletedJobsConciseTableProps> = ({
                     </div>
                   </td>
                   <td className="px-4 py-3 align-middle">
-                    <div className="flex items-center gap-3">
-                      {/* Client */}
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={client?.profileImage ? `${API_BASE_URL}/${client.profileImage}` : "/assets/img/client.jpg"}
+                        alt="client"
+                        className="w-7 h-7 rounded-full object-cover border"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
+                          {(client?.firstName || '') + ' ' + (client?.lastName || '')}
+                        </span>
+                        <span className="text-[10px] text-gray-500">{t('latestJobs.labels.client')}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    {provider ? (
+                      <div 
+                        className="flex items-center gap-2 cursor-pointer hover:bg-teal-50 rounded-lg p-1 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/provider/${job.providerId}`);
+                        }}
+                      >
                         <img
-                          src={client?.profileImage ? `${API_BASE_URL}/${client.profileImage}` : "/assets/img/client.jpg"}
-                          alt="client"
+                          src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
+                          alt="provider"
                           className="w-7 h-7 rounded-full object-cover border"
                         />
                         <div className="flex flex-col">
-                          <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
-                            {(client?.firstName || '') + ' ' + (client?.lastName || '')}
+                          <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate hover:text-teal-600 transition-colors">
+                            {(provider.firstName || '') + ' ' + (provider.lastName || '')}
                           </span>
-                          <span className="text-[10px] text-gray-500">{t('latestJobs.labels.client')}</span>
+                          <span className="text-[10px] text-gray-500">{t('latestJobs.labels.provider')}</span>
                         </div>
                       </div>
-                      
-                      {/* Provider (if assigned) */}
-                      {provider ? (
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
-                            alt="provider"
-                            className="w-7 h-7 rounded-full object-cover border"
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate">
-                              {(provider.firstName || '') + ' ' + (provider.lastName || '')}
-                            </span>
-                            <span className="text-[10px] text-gray-500">{t('latestJobs.labels.provider')}</span>
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">-</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 align-middle">
                     <div className="flex items-center gap-2">

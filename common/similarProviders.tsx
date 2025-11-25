@@ -92,7 +92,7 @@ const ProviderCard = React.memo(({ provider, idx, animDirection, currentUser, ha
                             {provider.hourlyRate || "--"} SEK/hr
                         </span>
                         {provider.isAvailable && (
-                            <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-base font-semibold shadow-sm animate-pulse">
+                            <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-base font-semibold shadow-sm">
                                 {t("providerPreview.available")}
                             </span>
                         )}
@@ -110,7 +110,7 @@ const ProviderCard = React.memo(({ provider, idx, animDirection, currentUser, ha
                             (provider as any).serviceArea.map((area: string, idx: number) => (
                                 <span 
                                     key={idx} 
-                                    className="px-3 py-1.5 bg-gradient-to-r from-violet-400 via-purple-500 to-fuchsia-500 text-white rounded-full text-xs font-bold border-none shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 backdrop-blur-sm animate-badge-glow-purple"
+                                    className="px-3 py-1.5 bg-gradient-to-r from-violet-400 via-purple-500 to-fuchsia-500 text-white rounded-full text-xs font-bold border-none shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 backdrop-blur-sm"
                                     style={{
                                         backgroundImage: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #d946ef 100%)',
                                         boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)',
@@ -316,14 +316,6 @@ const SimilarProviders: React.FC<SimilarProvidersProps> = React.memo(({ currentP
                 }
                 .animate-slide-right {
                     animation: slide-right 0.4s cubic-bezier(0.4,0,0.2,1) forwards;
-                }
-                @keyframes badge-glow-purple {
-                    0% { box-shadow: 0 0 0 rgba(139, 92, 246, 0.3); }
-                    50% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.6); }
-                    100% { box-shadow: 0 0 0 rgba(139, 92, 246, 0.3); }
-                }
-                .animate-badge-glow-purple {
-                    animation: badge-glow-purple 2s infinite;
                 }
             `}</style>
             <AuthPromptDialog
