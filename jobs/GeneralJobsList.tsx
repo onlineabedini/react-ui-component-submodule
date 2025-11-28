@@ -5,6 +5,7 @@ import { Calendar, Clock, Check, Eye, ArrowRight, X } from 'lucide-react';
 import { API_BASE_URL } from '@/config/api';
 import ServiceTypeDisplay from '@/components/common/ServiceTypeDisplay';
 import { formatDateYYYYMMDD, formatDateEuropean } from '@/lib/utils';
+import { getTranslatedServiceType } from '@/utils/serviceTypeTranslation';
 
 type Job = {
   id: string;
@@ -60,10 +61,6 @@ const getServiceTypes = (typeOfService: any): string[] => {
   return [];
 };
 
-const normalizeServiceTypeKey = (str: string) => {
-  if (!str) return '';
-  return str.charAt(0).toLowerCase() + str.slice(1).replace(/\s+([a-z])/g, (match, letter) => letter.toUpperCase());
-};
 
 const formatDateChip = (dateStr: string) => {
   try {
@@ -206,7 +203,7 @@ const GeneralJobsList: React.FC<GeneralJobsListProps> = ({
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
             <div className="flex items-center justify-between mb-2">
-              <ServiceTypeDisplay services={getServiceTypes(job.typeOfService).map(type => t(`latestJobs.tags.${normalizeServiceTypeKey(type)}`) || type)} variant="compact" className="font-semibold text-lg" />
+              <ServiceTypeDisplay services={getServiceTypes(job.typeOfService).map(type => getTranslatedServiceType(type, t))} variant="compact" className="font-semibold text-lg" />
               <div className="flex items-center gap-2">
                 <span className="px-2 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-800">
                   {t('latestJobs.statusValues.' + (job.status ? job.status.toLowerCase() : 'pending'))}

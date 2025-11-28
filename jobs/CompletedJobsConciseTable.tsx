@@ -7,6 +7,7 @@ import StarRating from '@/components/common/StarRating';
 import { formatDateYYYYMMDD, formatDateEuropean } from '@/lib/utils';
 import { Report } from '@/types/report';
 import { useAppNavigation } from '@/utils/routing-migration';
+import { getTranslatedServiceType } from '@/utils/serviceTypeTranslation';
 
 type Job = {
   id: string;
@@ -59,10 +60,6 @@ const getServiceTypes = (typeOfService: any): string[] => {
   return [];
 };
 
-const normalizeServiceTypeKey = (str: string) => {
-  if (!str) return '';
-  return str.charAt(0).toLowerCase() + str.slice(1).replace(/\s+([a-z])/g, (match, letter) => letter.toUpperCase());
-};
 
 const formatDateChip = (dateStr: string) => {
   try {
@@ -175,7 +172,7 @@ const CompletedJobsConciseTable: React.FC<CompletedJobsConciseTableProps> = ({
           </thead>
           <tbody>
             {jobsList.map((job) => {
-              const serviceLabels = getServiceTypes(job.typeOfService).map(type => t(`latestJobs.tags.${normalizeServiceTypeKey(type)}`) || type);
+              const serviceLabels = getServiceTypes(job.typeOfService).map(type => getTranslatedServiceType(type, t));
               const client = clientProfiles[job.clientId];
               const provider = job.providerId ? providerProfiles[job.providerId] : null;
               const providerReport = hasProviderReport(job.id);

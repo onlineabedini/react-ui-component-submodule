@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { API_BASE_URL } from '@/config/api';
 import ServiceTypeDisplay from '@/components/common/ServiceTypeDisplay';
 import { useAppNavigation } from '@/utils/routing-migration';
+import { getTranslatedServiceType } from '@/utils/serviceTypeTranslation';
 
 type Job = {
   id: string;
@@ -44,6 +45,8 @@ type GeneralJobsConciseTableProps = {
   providerProfiles: Record<string, any>;
   onOpenJobDetails: (job: Job, role: 'client' | 'provider') => void;
   onFetchUserProfiles: (job: Job) => void;
+  getCombinedStatus: (job: Job, volunteersByBooking?: Record<string, string[]>) => string;
+  volunteersByBooking: Record<string, string[]>;
 };
 
 // Helper functions
@@ -54,10 +57,6 @@ const getServiceTypes = (typeOfService: any): string[] => {
   return [];
 };
 
-const normalizeServiceTypeKey = (str: string) => {
-  if (!str) return '';
-  return str.charAt(0).toLowerCase() + str.slice(1).replace(/\s+([a-z])/g, (match, letter) => letter.toUpperCase());
-};
 
 const GeneralJobsConciseTable: React.FC<GeneralJobsConciseTableProps> = ({
   jobsList,
@@ -67,9 +66,17 @@ const GeneralJobsConciseTable: React.FC<GeneralJobsConciseTableProps> = ({
   providerProfiles,
   onOpenJobDetails,
   onFetchUserProfiles,
+  getCombinedStatus,
+  volunteersByBooking,
 }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigation();
+  
+  // Check if any job has the status "Waiting for client to accept volunteers"
+  const shouldShowProviderColumn = jobsList.some(job => {
+    const status = getCombinedStatus(job, volunteersByBooking);
+    return status !== t('latestJobs.statusValues.waitingForClientToAcceptVolunteers');
+  });
 
   if (jobsList.length === 0) {
     return (
@@ -87,15 +94,19 @@ const GeneralJobsConciseTable: React.FC<GeneralJobsConciseTableProps> = ({
             <tr>
               <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.service')}</th>
               <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.labels.client')}</th>
-              <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.labels.provider')}</th>
+              {shouldShowProviderColumn && (
+                <th className="text-left px-4 py-3 font-semibold">{t('latestJobs.labels.provider')}</th>
+              )}
               <th className="text-right px-4 py-3 font-semibold">{t('latestJobs.actions')}</th>
             </tr>
           </thead>
           <tbody>
             {jobsList.map((job) => {
-              const serviceLabels = getServiceTypes(job.typeOfService).map(type => t(`latestJobs.tags.${normalizeServiceTypeKey(type)}`) || type);
+              const serviceLabels = getServiceTypes(job.typeOfService).map(type => getTranslatedServiceType(type, t));
               const client = clientProfiles[job.clientId];
               const provider = job.providerId ? providerProfiles[job.providerId] : null;
+              const status = getCombinedStatus(job, volunteersByBooking);
+              const isWaitingForClientToAcceptVolunteers = status === t('latestJobs.statusValues.waitingForClientToAcceptVolunteers');
               
               // Fetch profiles if not loaded
               if (!client || (job.providerId && !provider)) {
@@ -126,41 +137,43 @@ const GeneralJobsConciseTable: React.FC<GeneralJobsConciseTableProps> = ({
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 align-middle">
-                    {provider ? (
-                      <div 
-                        className="flex items-center gap-2 cursor-pointer hover:bg-teal-50 rounded-lg p-1 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/provider/${job.providerId}`);
-                        }}
-                      >
-                        <img
-                          src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
-                          alt="provider"
-                          className="w-7 h-7 rounded-full object-cover border"
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate hover:text-teal-600 transition-colors">
-                            {(provider.firstName || '') + ' ' + (provider.lastName || '')}
-                          </span>
-                          <span className="text-[10px] text-gray-500">{t('latestJobs.labels.provider')}</span>
+                  {!isWaitingForClientToAcceptVolunteers && (
+                    <td className="px-4 py-3 align-middle">
+                      {provider ? (
+                        <div 
+                          className="flex items-center gap-2 cursor-pointer hover:bg-teal-50 rounded-lg p-1 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/provider/${job.providerId}`);
+                          }}
+                        >
+                          <img
+                            src={provider.profileImage ? `${API_BASE_URL}/${provider.profileImage}` : "/assets/img/provider.jpg"}
+                            alt="provider"
+                            className="w-7 h-7 rounded-full object-cover border"
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-medium text-gray-700 max-w-[8rem] truncate hover:text-teal-600 transition-colors">
+                              {(provider.firstName || '') + ' ' + (provider.lastName || '')}
+                            </span>
+                            <span className="text-[10px] text-gray-500">{t('latestJobs.labels.provider')}</span>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-gray-200 border flex items-center justify-center">
-                          <span className="text-xs text-gray-500">?</span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-gray-200 border flex items-center justify-center">
+                            <span className="text-xs text-gray-500">?</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs text-gray-500">
+                              {t('latestJobs.noProvider')}
+                            </span>
+                            <span className="text-[10px] text-gray-400">{t('latestJobs.statuses.pending')}</span>
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-500">
-                            {t('latestJobs.noProvider')}
-                          </span>
-                          <span className="text-[10px] text-gray-400">{t('latestJobs.statuses.pending')}</span>
-                        </div>
-                      </div>
-                    )}
-                  </td>
+                      )}
+                    </td>
+                  )}
                   <td className="px-4 py-3 align-middle text-right">
                     <button
                       className="px-3 py-1.5 rounded-md text-xs font-semibold bg-teal-600 text-white hover:bg-teal-700 shadow-sm"

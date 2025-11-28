@@ -12,6 +12,7 @@ import AddToCalendarButton from '@/components/common/AddToCalendarButton';
 import CustomTimePicker from '@/components/common/CustomTimePicker';
 import { formatDateYYYYMMDD, formatDateEuropean } from '@/lib/utils';
 import { Report } from '@/types/report';
+import { getTranslatedServiceType } from '@/utils/serviceTypeTranslation';
 
 type Job = {
   id: string;
@@ -83,10 +84,6 @@ const getServiceTypes = (typeOfService: any): string[] => {
   return [];
 };
 
-const normalizeServiceTypeKey = (str: string) => {
-  if (!str) return '';
-  return str.charAt(0).toLowerCase() + str.slice(1).replace(/\s+([a-z])/g, (match, letter) => letter.toUpperCase());
-};
 
 const formatDateChip = (dateStr: string) => {
   try {
@@ -423,7 +420,7 @@ const LatestJobsList: React.FC<LatestJobsListProps> = ({
           >
             <div className="mb-2">
               <div className="flex items-center justify-between gap-2 flex-wrap">
-                <ServiceTypeDisplay services={getServiceTypes(job.typeOfService).map(type => t(`latestJobs.tags.${normalizeServiceTypeKey(type)}`) || type)} variant="compact" className="font-semibold text-lg" />
+                <ServiceTypeDisplay services={getServiceTypes(job.typeOfService).map(type => getTranslatedServiceType(type, t))} variant="compact" className="font-semibold text-lg" />
                 <div className="flex items-center gap-3 flex-1 justify-end">
                   {clientAcceptedReport && (
                     <div className="flex items-center gap-1.5">
@@ -491,7 +488,7 @@ const LatestJobsList: React.FC<LatestJobsListProps> = ({
             {isFullyAccepted && isJobValidForCalendar(job) && (
               <div className="mt-2 mb-1">
                 <AddToCalendarButton
-                  title={t('latestJobs.calendarEventTitle', 'Vitago Job') + ` - ${getServiceTypes(job.typeOfService).map(type => t(`latestJobs.tags.${normalizeServiceTypeKey(type)}`) || type).join(', ')}`}
+                  title={t('latestJobs.calendarEventTitle', 'Vitago Job') + ` - ${getServiceTypes(job.typeOfService).map(type => getTranslatedServiceType(type, t)).join(', ')}`}
                   description={t('latestJobs.calendarEventDescription', 'Vitago job booking') + `\n${job.serviceAddress}`}
                   location={job.serviceAddress}
                   startDate={getSafeDate(job.bookingDate)}
